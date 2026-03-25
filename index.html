@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Çağtaşıt Portal</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: url('bg.jpg') no-repeat center center/cover;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.overlay{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.25);
+    z-index:1;
+}
+
+.login-box{
+    position:relative;
+    z-index:2;
+    width:340px;
+    padding:30px;
+    border-radius:18px;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 40px rgba(255,0,0,0.6);
+    text-align:center;
+    color:white;
+}
+
+.logo{
+    font-size:22px;
+    margin-bottom:10px;
+}
+
+.login-box h2{
+    margin-bottom:20px;
+    color:#ff2a2a;
+}
+
+.input{
+    width:100%;
+    padding:13px;
+    margin:10px 0;
+    border:none;
+    border-radius:10px;
+    background:#111;
+    color:white;
+}
+
+.btn{
+    width:100%;
+    padding:13px;
+    margin-top:10px;
+    background: linear-gradient(45deg,#ff0000,#b30000);
+    border:none;
+    border-radius:10px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform: scale(1.05);
+    box-shadow:0 0 20px red;
+}
+
+/* 🔥 MESAJ STİLİ */
+#message{
+    margin-top:10px;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<div class="login-box">
+    <div class="logo">ÇAĞTAŞIT PORTAL</div>
+    <h2>PORTAL GİRİŞİ</h2>
+
+    <form id="loginForm">
+        <input id="email" class="input" type="email" placeholder="E-Posta">
+        <input id="password" class="input" type="password" placeholder="Şifre">
+
+        <button class="btn" id="loginBtn" type="submit">GİRİŞ YAP</button>
+
+        <!-- 🔥 MESAJ ALANI -->
+        <div id="message"></div>
+    </form>
+</div>
+
+<script>
+const supabaseClient = supabase.createClient(
+  "https://ffzkszqwbnbemxifnsdf.supabase.co",
+  "sb_publishable_cleGW4OCPFllXjiJzq6Rqg_cSETwd0Y"
+);
+
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const message = document.getElementById("message");
+  const btn = document.getElementById("loginBtn");
+
+  // 🔄 Loading efekti
+  btn.innerText = "GİRİŞ YAPILIYOR...";
+  btn.disabled = true;
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    message.style.color = "#ff4d4d";
+    message.innerText = "❌ Giriş başarısız";
+    btn.innerText = "GİRİŞ YAP";
+    btn.disabled = false;
+  } else {
+    message.style.color = "#22c55e";
+    message.innerText = "✔ Giriş başarılı, yönlendiriliyor...";
+
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1000);
+  }
+});
+</script>
+
+</body>
+</html>

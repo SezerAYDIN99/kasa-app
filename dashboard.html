@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<style>
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#020617,#0f172a,#1e293b);
+    color:#e2e8f0;
+}
+
+/* NAVBAR */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 30px;
+    background: rgba(0,0,0,0.6);
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.logo{ font-size:20px; font-weight:600; }
+
+.user-menu{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.user-name{
+    font-size:13px;
+    opacity:0.7;
+}
+
+.logout-btn{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:none;
+    background:rgba(255,255,255,0.08);
+    color:#ff4d4d;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.logout-btn:hover{
+    background:#ff2d2d;
+    color:white;
+    transform:scale(1.1);
+}
+
+.container{ padding:20px; }
+
+.grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background: rgba(255,255,255,0.05);
+    padding:20px;
+    border-radius:16px;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+.big{ font-size:24px; font-weight:bold; }
+.small{ font-size:12px; opacity:0.6; margin-top:5px; }
+
+canvas{ width:100%!important; height:120px!important; }
+
+/* EXCEL */
+.excel-box{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    display:flex;
+    gap:10px;
+}
+
+.excel-btn{
+    background:rgba(255,255,255,0.08);
+    border:none;
+    padding:10px 15px;
+    border-radius:10px;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.excel-btn:hover{
+    background:#2563eb;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="logo">🚀 Yönetim Paneli</div>
+
+```
+<div class="user-menu">
+    <span class="user-name" id="userEmail">...</span>
+    <button class="logout-btn" onclick="logout()">⏻</button>
+</div>
+```
+
+</div>
+
+<div class="container">
+
+<div class="grid">
+<div class="card">
+    <h4>Toplam</h4>
+    <div id="totalBalance" class="big"></div>
+</div>
+
+<div class="card"><h4>Faturalı Giriş</h4><div id="fatGiris"></div><div id="ay1" class="small"></div></div>
+<div class="card"><h4>Faturalı Çıkış</h4><div id="fatCikis"></div><div id="ay2" class="small"></div></div>
+<div class="card"><h4>Faturasız Giriş</h4><div id="fatrsizGiris"></div><div id="ay3" class="small"></div></div>
+<div class="card"><h4>Faturasız Çıkış</h4><div id="fatrsizCikis"></div><div id="ay4" class="small"></div></div>
+</div>
+
+<br>
+
+<canvas id="mainChart"></canvas>
+
+<br>
+
+<div class="grid">
+<div class="card"><h4>Kırşehir</h4><div id="kirsehir" class="big"></div><canvas id="c1"></canvas></div>
+<div class="card"><h4>Aksaray</h4><div id="aksaray" class="big"></div><canvas id="c2"></canvas></div>
+<div class="card"><h4>Nevşehir</h4><div id="nevsehir" class="big"></div><canvas id="c3"></canvas></div>
+<div class="card"><h4>Sorgun</h4><div id="sorgun" class="big"></div><canvas id="c4"></canvas></div>
+<div class="card"><h4>Boğazlıyan</h4><div id="bogazliyan" class="big"></div><canvas id="c5"></canvas></div>
+</div>
+
+</div>
+
+<!-- EXCEL UI -->
+
+<div class="excel-box">
+    <a href="ornek.xlsx" download class="excel-btn">📥 Şablon</a>
+    <input type="file" id="fileInput" hidden>
+    <button class="excel-btn" onclick="document.getElementById('fileInput').click()">📤 Yükle</button>
+</div>
+
+<script>
+
+const supabaseClient = supabase.createClient(
+"https://ffzkszqwbnbemxifnsdf.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmemtzenF3Ym5iZW14aWZuc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODgxOTYsImV4cCI6MjA4OTg2NDE5Nn0.WK5VFbA8iR3J5ePug3xTBCnIIIMHb7ZDjDJGrEahlb8"
+);
+
+const today = new Date();
+const ay = today.toLocaleString('tr-TR', { month: 'long', year: 'numeric' });
+
+document.getElementById("ay1").innerText = ay;
+document.getElementById("ay2").innerText = ay;
+document.getElementById("ay3").innerText = ay;
+document.getElementById("ay4").innerText = ay;
+
+async function logout(){
+    await supabaseClient.auth.signOut();
+    location.href="index.html";
+}
+
+function normalize(text){
+return (text || "")
+.toLowerCase()
+.replaceAll("ı","i")
+.replaceAll("ğ","g")
+.replaceAll("ş","s")
+.replaceAll("ö","o")
+.replaceAll("ü","u")
+.replaceAll("ç","c");
+}
+
+async function loadData(){
+
+const { data: { user } } = await supabaseClient.auth.getUser();
+document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
+
+const { data: { user } } = await supabaseClient.auth.getUser();
+
+let query = supabaseClient
+    .from("kasa_verileri")
+    .select("*")
+    .order("tarih", { ascending: true });
+
+// 🔥 ADMIN ise filtre yok
+if(user.email.toLowerCase() !== "admin@test.com"){
+    query = query.eq("user_id", user.id);
+}
+
+const { data, error } = await query;
+
+if(error){
+    alert(error.message);
+    return;
+}
+
+let toplam=0;
+
+let kasa={kirsehir:[],aksaray:[],nevsehir:[],sorgun:[],bogazliyan:[]};
+let bakiyeKasa={kirsehir:0,aksaray:0,nevsehir:0,sorgun:0,bogazliyan:0};
+let fatG=0, fatC=0, frG=0, frC=0;
+let mainChartData=[];
+
+data.forEach(r=>{
+
+const tarih = new Date(r.tarih);
+const buAyMi = (
+    tarih.getMonth() === today.getMonth() &&
+    tarih.getFullYear() === today.getFullYear()
+);
+
+const gir=Number(r.tahsilat)||0;
+const cik=Number(r.tediye)||0;
+const fark=gir-cik;
+
+toplam+=fark;
+mainChartData.push(toplam);
+
+const ad = normalize(r.kasa).trim();
+
+function pushKasa(name){
+bakiyeKasa[name]+=fark;
+kasa[name].push(bakiyeKasa[name]);
+}
+
+switch(ad){
+    case "kirsehir": pushKasa("kirsehir"); break;
+    case "aksaray": pushKasa("aksaray"); break;
+    case "nevsehir": pushKasa("nevsehir"); break;
+    case "sorgun": pushKasa("sorgun"); break;
+    case "bogazliyan": pushKasa("bogazliyan"); break;
+}
+
+if(buAyMi){
+    if(r.tip==="faturalı"){
+        fatG+=gir; 
+        fatC+=cik;
+    }else{
+        frG+=gir; 
+        frC+=cik;
+    }
+}
+
+});
+
+document.getElementById("totalBalance").innerText=toplam+" ₺";
+document.getElementById("fatGiris").innerText=fatG+" ₺";
+document.getElementById("fatCikis").innerText=fatC+" ₺";
+document.getElementById("fatrsizGiris").innerText=frG+" ₺";
+document.getElementById("fatrsizCikis").innerText=frC+" ₺";
+
+document.getElementById("kirsehir").innerText=bakiyeKasa.kirsehir+" ₺";
+document.getElementById("aksaray").innerText=bakiyeKasa.aksaray+" ₺";
+document.getElementById("nevsehir").innerText=bakiyeKasa.nevsehir+" ₺";
+document.getElementById("sorgun").innerText=bakiyeKasa.sorgun+" ₺";
+document.getElementById("bogazliyan").innerText=bakiyeKasa.bogazliyan+" ₺";
+
+new Chart(document.getElementById("mainChart"),{
+type:"line",
+data:{labels:mainChartData.map((_,i)=>i),datasets:[{label:"Toplam",data:mainChartData}]}
+});
+
+function c(id,data){
+new Chart(document.getElementById(id),{
+type:"line",
+data:{labels:data.map((_,i)=>i),datasets:[{label:"Bakiye",data:data}]}
+});
+}
+
+c("c1",kasa.kirsehir);
+c("c2",kasa.aksaray);
+c("c3",kasa.nevsehir);
+c("c4",kasa.sorgun);
+c("c5",kasa.bogazliyan);
+
+}
+
+// EXCEL YÜKLE
+document.getElementById("fileInput").addEventListener("change", async function(e){
+
+const file = e.target.files[0];
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = async function(evt){
+
+const data = new Uint8Array(evt.target.result);
+const workbook = XLSX.read(data, { type: 'array' });
+
+const sheet = workbook.Sheets[workbook.SheetNames[0]];
+const json = XLSX.utils.sheet_to_json(sheet);
+
+const { data: { user } } = await supabaseClient.auth.getUser();
+
+for(let row of json){
+
+await supabaseClient.from("kasa_verileri").insert({
+    tarih: row.tarih,
+    kasa: row.kasa,
+    tip: row.tip,
+    aciklama: row.aciklama,
+    tahsilat: row.tahsilat || 0,
+    tediye: row.tediye || 0,
+    para_birimi: "TL",
+    user_id: user.id
+});
+
+}
+
+alert("Yükleme tamamlandı!");
+location.reload();
+
+};
+
+reader.readAsArrayBuffer(file);
+
+});
+
+document.addEventListener("DOMContentLoaded", loadData);
+
+</script>
+
+</body>
+</html>
