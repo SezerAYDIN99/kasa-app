@@ -476,7 +476,9 @@ function openModal(kasa){
   body.innerHTML = "";
 
   hareketler[kasa].forEach(r => {
-    const tutar = (Number(r.tahsilat||0) - Number(r.tediye||0));
+    console.log(r);
+
+const tutar = (Number(r.tahsilat||0) - Number(r.tediye||0));
 
     const row = `
       <tr>
