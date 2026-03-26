@@ -112,6 +112,43 @@ canvas{ width:100%!important; height:120px!important; }
 .excel-btn:hover{
     background:#2563eb;
 }
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:#0f172a;
+    padding:20px;
+    border-radius:12px;
+    width:700px;
+    max-height:80%;
+    overflow:auto;
+}
+
+.close{
+    float:right;
+    cursor:pointer;
+    font-size:20px;
+}
+
+table{
+    width:100%;
+    margin-top:15px;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #333;
+    padding:8px;
+}
 </style>
 
 </head>
@@ -136,8 +173,43 @@ canvas{ width:100%!important; height:120px!important; }
 <div class="container">
 
 <div class="grid">
+
 <div class="card">
     <h4>Toplam</h4>
+    <div id="totalBalance" class="big"></div>
+</div>
+
+<div class="card" onclick="openModal('kirsehir')">
+  <h4>Kırşehir</h4>
+  <div id="kirsehir" class="big"></div>
+  <canvas id="c1"></canvas>
+</div>
+
+<div class="card" onclick="openModal('aksaray')">
+  <h4>Aksaray</h4>
+  <div id="aksaray" class="big"></div>
+  <canvas id="c2"></canvas>
+</div>
+
+<div class="card" onclick="openModal('nevsehir')">
+  <h4>Nevşehir</h4>
+  <div id="nevsehir" class="big"></div>
+  <canvas id="c3"></canvas>
+</div>
+
+<div class="card" onclick="openModal('sorgun')">
+  <h4>Sorgun</h4>
+  <div id="sorgun" class="big"></div>
+  <canvas id="c4"></canvas>
+</div>
+
+<div class="card" onclick="openModal('bogazliyan')">
+  <h4>Boğazlıyan</h4>
+  <div id="bogazliyan" class="big"></div>
+  <canvas id="c5"></canvas>
+</div>
+
+</div>
     <div id="totalBalance" class="big"></div>
 </div>
 
@@ -200,6 +272,13 @@ canvas{ width:100%!important; height:120px!important; }
 
 <script>
 
+let hareketler = {
+  kirsehir: [],
+  aksaray: [],
+  nevsehir: [],
+  sorgun: [],
+  bogazliyan: []
+};
 const supabaseClient = supabase.createClient(
 "https://ffzkszqwbnbemxifnsdf.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmemtzenF3Ym5iZW14aWZuc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODgxOTYsImV4cCI6MjA4OTg2NDE5Nn0.WK5VFbA8iR3J5ePug3xTBCnIIIMHb7ZDjDJGrEahlb8"
@@ -279,6 +358,9 @@ console.log("KASA GELEN:", r.kasa, "→ normalize:", ad);
 function pushKasa(name){
 bakiyeKasa[name]+=fark;
 kasa[name].push(bakiyeKasa[name]);
+
+// YENİ EKLENEN
+hareketler[name].push(r);
 }
 
 if(ad.includes("kirsehir")) pushKasa("kirsehir");
@@ -385,10 +467,64 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadData();
     });
 
+// 🔥 BURAYA EKLE
+function openModal(kasa){
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("modalTitle").innerText = kasa.toUpperCase() + " Hareketleri";
+
+  const body = document.getElementById("modalBody");
+  body.innerHTML = "";
+
+  hareketler[kasa].forEach(r => {
+    const tutar = (Number(r.tahsilat||0) - Number(r.tediye||0));
+
+    const row = `
+      <tr>
+        <td>${r.tarih}</td>
+        <td>${r.tip}</td>
+        <td>${tutar} ₺</td>
+        <td>${r.aciklama || ""}</td>
+      </tr>
+    `;
+
+    body.innerHTML += row;
+  });
+}
+
+function closeModal(){
+  document.getElementById("modal").style.display = "none";
+}
+
+window.onclick = function(e){
+  if(e.target.id === "modal"){
+    closeModal();
+  }
+}
+
+</script>
 
 </script>
 <div id="loading" class="loading">
     Yükleniyor...
+</div>
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">×</span>
+    <h3 id="modalTitle"></h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Tarih</th>
+          <th>Tür</th>
+          <th>Tutar</th>
+          <th>Açıklama</th>
+        </tr>
+      </thead>
+      <tbody id="modalBody"></tbody>
+    </table>
+  </div>
 </div>
 </body>
 </html>
