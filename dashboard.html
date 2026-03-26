@@ -1,32 +1,33 @@
 <!DOCTYPE html>
-
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <title>Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
 body{
     margin:0;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg,#020617,#0f172a,#1e293b);
+    background:
+        linear-gradient(rgba(2,6,23,0.5), rgba(2,6,23,0.6)),
+        url("kasa.png");
+    background-size: cover;
+    background-position: center 35%;
+    background-attachment: fixed;
     color:#e2e8f0;
 }
-
 /* NAVBAR */
 .navbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
     padding:20px 30px;
-    background: rgba(0,0,0,0.6);
-    border-bottom:1px solid rgba(255,255,255,0.05);
+    background: rgba(2,6,23,0.95);
+    border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
 .logo{ font-size:20px; font-weight:600; }
@@ -69,10 +70,13 @@ body{
 }
 
 .card{
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     padding:20px;
     border-radius:16px;
     transition:0.3s;
+    border:1px solid rgba(255,255,255,0.08);
 }
 
 .card:hover{
@@ -116,13 +120,10 @@ canvas{ width:100%!important; height:120px!important; }
 <div class="navbar">
     <div class="logo">🚀 Yönetim Paneli</div>
 
-```
-<div class="user-menu">
-    <span class="user-name" id="userEmail">...</span>
-    <button class="logout-btn" onclick="logout()">⏻</button>
-</div>
-```
-
+    <div class="user-menu">
+        <span class="user-name" id="userEmail">...</span>
+        <button class="logout-btn" onclick="logout()">⏻</button>
+    </div>
 </div>
 
 <div class="container">
@@ -155,12 +156,10 @@ canvas{ width:100%!important; height:120px!important; }
 
 </div>
 
-<!-- EXCEL UI -->
-
 <div class="excel-box">
     <a href="ornek.xlsx" download class="excel-btn">📥 Şablon</a>
     <input type="file" id="fileInput" hidden>
-    <button class="excel-btn" onclick="document.getElementById('fileInput').click()">📤 Yükle</button>
+    <button id="uploadBtn" class="excel-btn" disabled onclick="document.getElementById('fileInput').click()">📤 Yükle</button>
 </div>
 
 <script>
@@ -199,14 +198,11 @@ async function loadData(){
 const { data: { user } } = await supabaseClient.auth.getUser();
 document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
 
-const { data: { user } } = await supabaseClient.auth.getUser();
-
 let query = supabaseClient
     .from("kasa_verileri")
     .select("*")
     .order("tarih", { ascending: true });
 
-// 🔥 ADMIN ise filtre yok
 if(user.email.toLowerCase() !== "admin@test.com"){
     query = query.eq("user_id", user.id);
 }
@@ -299,7 +295,6 @@ c("c5",kasa.bogazliyan);
 
 }
 
-// EXCEL YÜKLE
 document.getElementById("fileInput").addEventListener("change", async function(e){
 
 const file = e.target.files[0];
@@ -308,7 +303,7 @@ if(!file) return;
 const reader = new FileReader();
 
 reader.onload = async function(evt){
-
+document.getElementById("loading").style.display = "block";
 const data = new Uint8Array(evt.target.result);
 const workbook = XLSX.read(data, { type: 'array' });
 
@@ -341,9 +336,12 @@ reader.readAsArrayBuffer(file);
 
 });
 
+
 document.addEventListener("DOMContentLoaded", loadData);
 
 </script>
-
+<div id="loading" class="loading">
+    Yükleniyor...
+</div>
 </body>
 </html>
