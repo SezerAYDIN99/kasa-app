@@ -353,9 +353,14 @@ async function kontrolUploadYetki(){
 
     const email = user.email.toLowerCase();
 
-    if(email.includes("kasa")){
-        document.getElementById("uploadBtn").disabled = false;
-    }
+if(
+    email.includes("sorgun") ||
+    email.includes("bogazliyan") ||
+    email.includes("kirsehir") ||
+    email.includes("aksaray") ||
+    email.includes("nevsehir")
+){
+    document.getElementById("uploadBtn").disabled = false;
 }
 
 </script>
