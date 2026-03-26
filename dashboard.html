@@ -334,7 +334,7 @@ const { error } = await supabaseClient.from("kasa_verileri").insert({
 });
 
 if(error){
-    console.error("INSERT HATA:", error);
+    console.error("INSERT HATA DETAY:", JSON.stringify(error, null, 2));
     alert("Hata var! F12 aç");
     return;
 }
