@@ -154,11 +154,40 @@ canvas{ width:100%!important; height:120px!important; }
 <br>
 
 <div class="grid">
-<div class="card"><h4>Kırşehir</h4><div id="kirsehir" class="big"></div><canvas id="c1"></canvas></div>
-<div class="card"><h4>Aksaray</h4><div id="aksaray" class="big"></div><canvas id="c2"></canvas></div>
-<div class="card"><h4>Nevşehir</h4><div id="nevsehir" class="big"></div><canvas id="c3"></canvas></div>
-<div class="card"><h4>Sorgun</h4><div id="sorgun" class="big"></div><canvas id="c4"></canvas></div>
-<div class="card"><h4>Boğazlıyan</h4><div id="bogazliyan" class="big"></div><canvas id="c5"></canvas></div>
+
+<div class="card">
+  <h4>Kırşehir</h4>
+  <div id="kirsehir" class="big"></div>
+  <canvas id="c1"></canvas>
+  <div id="kirsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
+</div>
+
+<div class="card">
+  <h4>Aksaray</h4>
+  <div id="aksaray" class="big"></div>
+  <canvas id="c2"></canvas>
+  <div id="aksarayList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
+</div>
+
+<div class="card">
+  <h4>Nevşehir</h4>
+  <div id="nevsehir" class="big"></div>
+  <canvas id="c3"></canvas>
+  <div id="nevsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
+</div>
+
+<div class="card">
+  <h4>Sorgun</h4>
+  <div id="sorgun" class="big"></div>
+  <canvas id="c4"></canvas>
+  <div id="sorgunList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
+</div>
+
+<div class="card">
+  <h4>Boğazlıyan</h4>
+  <div id="bogazliyan" class="big"></div>
+  <canvas id="c5"></canvas>
+  <div id="bogazliyanList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
 
 </div>
@@ -245,18 +274,19 @@ mainChartData.push(toplam);
 
 const ad = normalize(r.kasa).trim();
 
+console.log("KASA GELEN:", r.kasa, "→ normalize:", ad);
+
 function pushKasa(name){
 bakiyeKasa[name]+=fark;
 kasa[name].push(bakiyeKasa[name]);
 }
 
-switch(ad){
-    case "kirsehir": pushKasa("kirsehir"); break;
-    case "aksaray": pushKasa("aksaray"); break;
-    case "nevsehir": pushKasa("nevsehir"); break;
-    case "sorgun": pushKasa("sorgun"); break;
-    case "bogazliyan": pushKasa("bogazliyan"); break;
-}
+if(ad.includes("kirsehir")) pushKasa("kirsehir");
+else if(ad.includes("aksaray")) pushKasa("aksaray");
+else if(ad.includes("nevsehir")) pushKasa("nevsehir");
+else if(ad.includes("sorgun")) pushKasa("sorgun");
+else if(ad.includes("bogazliyan")) pushKasa("bogazliyan");
+
 
 if(buAyMi){
     if(r.tip==="faturalı"){
@@ -284,7 +314,7 @@ document.getElementById("bogazliyan").innerText=bakiyeKasa.bogazliyan+" ₺";
 
 new Chart(document.getElementById("mainChart"),{
 type:"line",
-data:{labels:mainChartData.map((_,i)=>i),datasets:[{label:"Toplam",data:mainChartData}]}
+data:{labels:mainLabels,datasets:[{label:"Toplam",data:mainChartData}]}
 });
 
 function c(id,data){
