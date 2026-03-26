@@ -25,9 +25,10 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:20px 30px;
-    background: rgba(2,6,23,0.95);
-    border-bottom:1px solid rgba(255,255,255,0.08);
+    padding:15px 25px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color:white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .logo{ font-size:20px; font-weight:600; }
@@ -118,7 +119,10 @@ canvas{ width:100%!important; height:120px!important; }
 <body>
 
 <div class="navbar">
-    <div class="logo">🚀 Yönetim Paneli</div>
+    <div class="logo" style="display:flex; align-items:center; gap:10px;">
+  <img src="kasa.png" style="width:40px;">
+  <span style="font-weight:600; font-size:18px;">Kasa Paneli</span>
+</div>
 
     <div class="user-menu">
         <span class="user-name" id="userEmail">...</span>
