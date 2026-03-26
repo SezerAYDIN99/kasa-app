@@ -341,7 +341,22 @@ reader.readAsArrayBuffer(file);
 });
 
 
-document.addEventListener("DOMContentLoaded", loadData);
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadData();
+    await kontrolUploadYetki();
+});
+
+async function kontrolUploadYetki(){
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    if(!user) return;
+
+    const email = user.email.toLowerCase();
+
+    if(email.includes("kasa")){
+        document.getElementById("uploadBtn").disabled = false;
+    }
+}
 
 </script>
 <div id="loading" class="loading">
