@@ -351,6 +351,8 @@ const fark=gir-cik;
 toplam+=fark;
 mainChartData.push(toplam);
 
+mainLabels.push(r.tarih);
+
 const ad = normalize(r.kasa).trim();
 
 console.log("KASA GELEN:", r.kasa, "→ normalize:", ad);
@@ -394,6 +396,7 @@ document.getElementById("nevsehir").innerText=bakiyeKasa.nevsehir+" ₺";
 document.getElementById("sorgun").innerText=bakiyeKasa.sorgun+" ₺";
 document.getElementById("bogazliyan").innerText=bakiyeKasa.bogazliyan+" ₺";
 
+let mainLabels = [];
 new Chart(document.getElementById("mainChart"),{
 type:"line",
 data:{labels:mainLabels,datasets:[{label:"Toplam",data:mainChartData}]}
@@ -485,7 +488,7 @@ const tutar = (Number(r.tahsilat||0) - Number(r.tediye||0));
         <td>${r.tarih}</td>
         <td>${r.tip}</td>
         <td>${tutar} ₺</td>
-        <td>${r.aciklama || ""}</td>
+        <td>${r.aciklama ?? "-"}</td>
       </tr>
     `;
 
