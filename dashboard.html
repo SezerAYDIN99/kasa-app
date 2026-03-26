@@ -118,6 +118,9 @@ canvas{ width:100%!important; height:120px!important; }
 
 <body>
 
+<input type="file" id="excelInput" />
+<button onclick="excelYukle()">Yükle</button>
+
 <div class="navbar">
     <div class="logo" style="display:flex; align-items:center; gap:10px;">
   <img src="kasa.png" style="width:40px;">
@@ -313,12 +316,13 @@ const workbook = XLSX.read(data, { type: 'array' });
 
 const sheet = workbook.Sheets[workbook.SheetNames[0]];
 const json = XLSX.utils.sheet_to_json(sheet);
+console.log("EXCEL:", json);
 
 const { data: { user } } = await supabaseClient.auth.getUser();
 
 for(let row of json){
 
-await supabaseClient.from("kasa_verileri").insert({
+const { error } = await supabaseClient.from("kasa_verileri").insert({
     tarih: row.tarih,
     kasa: row.kasa,
     tip: row.tip,
@@ -328,6 +332,12 @@ await supabaseClient.from("kasa_verileri").insert({
     para_birimi: "TL",
     user_id: user.id
 });
+
+if(error){
+    console.error("INSERT HATA:", error);
+    alert("Hata var! F12 aç");
+    return;
+}
 
 }
 
