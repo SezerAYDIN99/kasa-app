@@ -163,7 +163,7 @@ canvas{ width:100%!important; height:120px!important; }
 <div class="excel-box">
     <a href="ornek.xlsx" download class="excel-btn">📥 Şablon</a>
     <input type="file" id="fileInput" hidden>
-    <button id="uploadBtn" class="excel-btn" disabled onclick="document.getElementById('fileInput').click()">📤 Yükle</button>
+    <button id="uploadBtn" class="excel-btn" onclick="document.getElementById('fileInput').click()">📤 Yükle</button>
 </div>
 
 <script>
@@ -343,25 +343,8 @@ reader.readAsArrayBuffer(file);
 
 document.addEventListener("DOMContentLoaded", async () => {
     await loadData();
-    await kontrolUploadYetki();
-});
+    });
 
-async function kontrolUploadYetki(){
-    const { data: { user } } = await supabaseClient.auth.getUser();
-
-    if(!user) return;
-
-    const email = user.email.toLowerCase();
-
-if(
-    email.includes("sorgun") ||
-    email.includes("bogazliyan") ||
-    email.includes("kirsehir") ||
-    email.includes("aksaray") ||
-    email.includes("nevsehir")
-){
-    document.getElementById("uploadBtn").disabled = false;
-}
 
 </script>
 <div id="loading" class="loading">
