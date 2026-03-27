@@ -363,6 +363,8 @@ let mainLabels=[];
 
 data.forEach(r=>{
 
+console.log("SATIR:", r);
+
 const tarih = new Date(r.tarih);
 const buAyMi = (
     tarih.getMonth() === today.getMonth() &&
