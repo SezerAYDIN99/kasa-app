@@ -381,19 +381,19 @@ async function logout(){
     location.href="index.html";
 }
 
-function normalize(text){
 function formatMoney(val){
   return Number(val || 0).toFixed(2);
 }
 
-return (text || "")
-.toLowerCase()
-.replaceAll("ı","i")
-.replaceAll("ğ","g")
-.replaceAll("ş","s")
-.replaceAll("ö","o")
-.replaceAll("ü","u")
-.replaceAll("ç","c");
+function normalize(text){
+  return (text || "")
+    .toLowerCase()
+    .replaceAll("ı","i")
+    .replaceAll("ğ","g")
+    .replaceAll("ş","s")
+    .replaceAll("ö","o")
+    .replaceAll("ü","u")
+    .replaceAll("ç","c");
 }
 
 async function loadData(){
