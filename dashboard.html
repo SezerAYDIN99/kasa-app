@@ -453,74 +453,60 @@ data.forEach(r=>{
   const cik = Number(r.tediye)||0;
   const fark = gir - cik;
 
-  toplam += fark;
+  const buAyMi = true;
 
+  toplam += fark;
   const d = new Date(r.tarih);
   const ayKey = d.getFullYear() + "-" + (d.getMonth() + 1);
 
   if(!aylik[ayKey]) aylik[ayKey] = 0;
   aylik[ayKey] += fark;
 
-});
-Object.keys(aylik).sort().forEach(ay => {
+  const ad = normalize(String(r.kasa || "")).trim();
 
-  const [yil, ayNo] = ay.split("-");
+  function pushKasa(name){
+    bakiyeKasa[name]+=fark;
+    kasa[name].push(bakiyeKasa[name]);
+    hareketler[name].push(r);
+  }
 
-  const ayIsim = new Date(yil, ayNo-1).toLocaleDateString("tr-TR", {
-    month: "short",
-    year: "numeric"
-  });
+  if(ad.includes("kirsehir")) pushKasa("kirsehir");
+  else if(ad.includes("aksaray")) pushKasa("aksaray");
+  else if(ad.includes("nevsehir")) pushKasa("nevsehir");
+  else if(ad.includes("sorgun")) pushKasa("sorgun");
+  else if(ad.includes("bogazliyan")) pushKasa("bogazliyan");
 
-  mainLabels.push(ayIsim);
-  mainChartData.push(aylik[ay]);
-});
+  // 🔥 ALT KART DETAY
+  if(buAyMi){
 
-console.log("KASA:", ad);
-console.log("KASA GELEN:", r.kasa, "→ normalize:", ad);
+    if(ad.includes("kirsehir")){
+      if(r.tip==="faturalı"){ detay.kirsehir.fg+=gir; detay.kirsehir.fc+=cik; }
+      else { detay.kirsehir.ng+=gir; detay.kirsehir.nc+=cik; }
+    }
 
-function pushKasa(name){
-bakiyeKasa[name]+=fark;
-kasa[name].push(bakiyeKasa[name]);
-hareketler[name].push(r);
-}
+    if(ad.includes("aksaray")){
+      if(r.tip==="faturalı"){ detay.aksaray.fg+=gir; detay.aksaray.fc+=cik; }
+      else { detay.aksaray.ng+=gir; detay.aksaray.nc+=cik; }
+    }
 
-if(ad.includes("kirsehir")) pushKasa("kirsehir");
-else if(ad.includes("aksaray")) pushKasa("aksaray");
-else if(ad.includes("nevsehir")) pushKasa("nevsehir");
-else if(ad.includes("sorgun")) pushKasa("sorgun");
-else if(ad.includes("bogazliyan")) pushKasa("bogazliyan");
+    if(ad.includes("nevsehir")){
+      if(r.tip==="faturalı"){ detay.nevsehir.fg+=gir; detay.nevsehir.fc+=cik; }
+      else { detay.nevsehir.ng+=gir; detay.nevsehir.nc+=cik; }
+    }
 
-// 🔥 ALT KART DETAY
-if(buAyMi){
+    if(ad.includes("sorgun")){
+      if(r.tip==="faturalı"){ detay.sorgun.fg+=gir; detay.sorgun.fc+=cik; }
+      else { detay.sorgun.ng+=gir; detay.sorgun.nc+=cik; }
+    }
 
-if(ad.includes("kirsehir")){
-if(r.tip==="faturalı"){ detay.kirsehir.fg+=gir; detay.kirsehir.fc+=cik; }
-else { detay.kirsehir.ng+=gir; detay.kirsehir.nc+=cik; }
-}
+    if(ad.includes("bogazliyan")){
+      if(r.tip==="faturalı"){ detay.bogazliyan.fg+=gir; detay.bogazliyan.fc+=cik; }
+      else { detay.bogazliyan.ng+=gir; detay.bogazliyan.nc+=cik; }
+    }
 
-if(ad.includes("aksaray")){
-if(r.tip==="faturalı"){ detay.aksaray.fg+=gir; detay.aksaray.fc+=cik; }
-else { detay.aksaray.ng+=gir; detay.aksaray.nc+=cik; }
-}
+  }
 
-if(ad.includes("nevsehir")){
-if(r.tip==="faturalı"){ detay.nevsehir.fg+=gir; detay.nevsehir.fc+=cik; }
-else { detay.nevsehir.ng+=gir; detay.nevsehir.nc+=cik; }
-}
-
-if(ad.includes("sorgun")){
-if(r.tip==="faturalı"){ detay.sorgun.fg+=gir; detay.sorgun.fc+=cik; }
-else { detay.sorgun.ng+=gir; detay.sorgun.nc+=cik; }
-}
-
-if(ad.includes("bogazliyan")){
-if(r.tip==="faturalı"){ detay.bogazliyan.fg+=gir; detay.bogazliyan.fc+=cik; }
-else { detay.bogazliyan.ng+=gir; detay.bogazliyan.nc+=cik; }
-}
-
-}
-
-});
+}); 
 
 Object.keys(aylik).sort().forEach(ay => {
 
@@ -534,6 +520,8 @@ Object.keys(aylik).sort().forEach(ay => {
   mainLabels.push(ayIsim);
   mainChartData.push(aylik[ay]);
 });
+
+
 
 function yaz(id, deger){
   const el = document.getElementById(id);
