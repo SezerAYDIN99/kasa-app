@@ -475,8 +475,6 @@ Object.keys(aylik).sort().forEach(ay => {
   mainChartData.push(aylik[ay]);
 });
 
-const ad = normalize(String(r.kasa || "")).trim();
-
 console.log("KASA:", ad);
 console.log("KASA GELEN:", r.kasa, "→ normalize:", ad);
 
