@@ -455,7 +455,10 @@ toplam+=fark;
 const gun = new Date(r.tarih).toISOString().split("T")[0];
 
 if(!gunluk[gun]) gunluk[gun] = 0;
-gunluk[gun] += fark;
+if(buAyMi){
+  if(!gunluk[gun]) gunluk[gun] = 0;
+  gunluk[gun] += fark;
+}
 
 const ad = normalize(String(r.kasa || "")).trim();
 
