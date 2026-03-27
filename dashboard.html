@@ -386,7 +386,7 @@ console.log("LOADDATA ÇALIŞTI");
 
   const { data: { user } } = await supabaseClient.auth.getUser();
 
-  console.error("USER:", user);
+  console.log("USER:", user);
 
   document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
 
@@ -656,7 +656,7 @@ const tutar = (Number(r.tahsilat||0) - Number(r.tediye||0));
         <td>${r.tarih}</td>
         <td>${r.tip}</td>
         <td>${tutar} ₺</td>
-        <td>${r.aciklama ?? "-"}</td>
+        <td>${r.aciklama || r.açıklama || "-"}</td>
       </tr>
     `;
 
