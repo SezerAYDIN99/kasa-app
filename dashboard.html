@@ -312,10 +312,8 @@ const supabaseClient = supabase.createClient(
 const today = new Date();
 const ay = today.toLocaleString('tr-TR', { month: 'long', year: 'numeric' });
 
-document.getElementById("ay1").innerText = ay;
-document.getElementById("ay2").innerText = ay;
-document.getElementById("ay3").innerText = ay;
-document.getElementById("ay4").innerText = ay;
+const a1 = document.getElementById("ay1");
+if(a1) a1.innerText = ay;
 
 async function logout(){
     await supabaseClient.auth.signOut();
