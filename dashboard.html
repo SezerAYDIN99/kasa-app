@@ -9,6 +9,15 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
+
+.detay div{
+  margin-bottom:6px;
+  font-size:13px;
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:4px 0;
+}
 body{
     margin:0;
     font-family: 'Segoe UI', sans-serif;
@@ -256,12 +265,12 @@ th,td{
   <h4>Kırşehir</h4>
   <div id="kirsehir2" class="big"></div>
 
-  <div class="small" style="margin-top:8px;">
-    FG: <span id="kirsehir_fg"></span> |
-    FÇ: <span id="kirsehir_fc"></span><br>
-    NG: <span id="kirsehir_ng"></span> |
-    NÇ: <span id="kirsehir_nc"></span>
-  </div>
+<div class="detay">
+  <div><span>Faturalı Giriş</span><span id="kirsehir_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="kirsehir_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="kirsehir_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="kirsehir_nc"></span></div>
+</div>
 
   <canvas id="c1_2"></canvas>
   <div id="kirsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
