@@ -450,8 +450,8 @@ let mainLabels=[];
 
 data.forEach(r=>{
 
-  const gir = Number(r.tahsilat)||0;
-  const cik = Number(r.tediye)||0;
+  const gir = Number(parseFloat(r.tahsilat || 0).toFixed(2));
+  const cik = Number(parseFloat(r.tediye || 0).toFixed(2));
   const fark = gir - cik;
 
   const buAyMi = true;
@@ -526,7 +526,7 @@ Object.keys(aylik).sort().forEach(ay => {
 
 function yaz(id, deger){
   const el = document.getElementById(id);
-  if(el) el.innerText = deger;
+  if(el) el.innerText = Number(deger).toFixed(2);
 }
 
 yaz("kirsehir_fg", detay.kirsehir.fg);
