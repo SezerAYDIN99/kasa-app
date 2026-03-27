@@ -212,10 +212,37 @@ th,td{
 
 </div>
 
-<div class="card"><h4>Faturalı Giriş</h4><div id="fatGiris"></div><div id="ay1" class="small"></div></div>
-<div class="card"><h4>Faturalı Çıkış</h4><div id="fatCikis"></div><div id="ay2" class="small"></div></div>
-<div class="card"><h4>Faturasız Giriş</h4><div id="fatrsizGiris"></div><div id="ay3" class="small"></div></div>
-<div class="card"><h4>Faturasız Çıkış</h4><div id="fatrsizCikis"></div><div id="ay4" class="small"></div></div>
+<div class="card" style="margin-top:20px;">
+  <h3 style="margin-bottom:15px;">📊 Aylık Finans Özeti</h3>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:15px;">
+
+<div>
+  <div class="small">Faturalı Giriş</div>
+  <div id="fatGiris" class="big"></div>
+</div>
+
+<div>
+  <div class="small">Faturalı Çıkış</div>
+  <div id="fatCikis" class="big"></div>
+</div>
+
+<div>
+  <div class="small">Faturasız Giriş</div>
+  <div id="fatrsizGiris" class="big"></div>
+</div>
+
+<div>
+  <div class="small">Faturasız Çıkış</div>
+  <div id="fatrsizCikis" class="big"></div>
+</div>
+
+  </div>
+
+  <div style="margin-top:15px; font-size:12px; opacity:0.6;">
+    <span id="ay1"></span>
+  </div>
+</div>
 
 <br>
 
@@ -310,11 +337,6 @@ async function loadData(){
 
 const { data: { user } } = await supabaseClient.auth.getUser();
 document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
-
-let query = supabaseClient
-    .from("kasa_verileri")
-    .select("*")
-    .order("tarih", { ascending: true });
 
 let query = supabaseClient
     .from("kasa_verileri")
