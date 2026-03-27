@@ -255,6 +255,14 @@ th,td{
 <div class="card">
   <h4>Kırşehir</h4>
   <div id="kirsehir2" class="big"></div>
+
+  <div class="small" style="margin-top:8px;">
+    FG: <span id="kirsehir_fg"></span> |
+    FÇ: <span id="kirsehir_fc"></span><br>
+    NG: <span id="kirsehir_ng"></span> |
+    NÇ: <span id="kirsehir_nc"></span>
+  </div>
+
   <canvas id="c1_2"></canvas>
   <div id="kirsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
@@ -262,6 +270,14 @@ th,td{
 <div class="card">
   <h4>Aksaray</h4>
   <div id="aksaray2" class="big"></div>
+
+  <div class="small" style="margin-top:8px;">
+    FG: <span id="aksaray_fg"></span> |
+    FÇ: <span id="aksaray_fc"></span><br>
+    NG: <span id="aksaray_ng"></span> |
+    NÇ: <span id="aksaray_nc"></span>
+  </div>
+
   <canvas id="c2_2"></canvas>
   <div id="aksarayList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
@@ -269,6 +285,14 @@ th,td{
 <div class="card">
   <h4>Nevşehir</h4>
   <div id="nevsehir2" class="big"></div>
+
+  <div class="small" style="margin-top:8px;">
+    FG: <span id="nevsehir_fg"></span> |
+    FÇ: <span id="nevsehir_fc"></span><br>
+    NG: <span id="nevsehir_ng"></span> |
+    NÇ: <span id="nevsehir_nc"></span>
+  </div>
+
   <canvas id="c3_2"></canvas>
   <div id="nevsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
@@ -276,6 +300,14 @@ th,td{
 <div class="card">
   <h4>Sorgun</h4>
   <div id="sorgun2" class="big"></div>
+
+  <div class="small" style="margin-top:8px;">
+    FG: <span id="sorgun_fg"></span> |
+    FÇ: <span id="sorgun_fc"></span><br>
+    NG: <span id="sorgun_ng"></span> |
+    NÇ: <span id="sorgun_nc"></span>
+  </div>
+
   <canvas id="c4_2"></canvas>
   <div id="sorgunList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
@@ -283,6 +315,14 @@ th,td{
 <div class="card">
   <h4>Boğazlıyan</h4>
   <div id="bogazliyan2" class="big"></div>
+
+  <div class="small" style="margin-top:8px;">
+    FG: <span id="bogazliyan_fg"></span> |
+    FÇ: <span id="bogazliyan_fc"></span><br>
+    NG: <span id="bogazliyan_ng"></span> |
+    NÇ: <span id="bogazliyan_nc"></span>
+  </div>
+
   <canvas id="c5_2"></canvas>
   <div id="bogazliyanList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
@@ -355,6 +395,15 @@ let toplam=0;
 let kasa={kirsehir:[],aksaray:[],nevsehir:[],sorgun:[],bogazliyan:[]};
 let bakiyeKasa={kirsehir:0,aksaray:0,nevsehir:0,sorgun:0,bogazliyan:0};
 let fatG=0, fatC=0, frG=0, frC=0;
+
+let detay = {
+  kirsehir:{fg:0,fc:0,ng:0,nc:0},
+  aksaray:{fg:0,fc:0,ng:0,nc:0},
+  nevsehir:{fg:0,fc:0,ng:0,nc:0},
+  sorgun:{fg:0,fc:0,ng:0,nc:0},
+  bogazliyan:{fg:0,fc:0,ng:0,nc:0}
+};
+
 let mainChartData=[];
 
 let mainLabels=[];
@@ -365,8 +414,8 @@ console.log("SATIR:", r);
 
 const tarih = new Date(r.tarih);
 const buAyMi = (
-    tarih.getMonth() === today.getMonth() &&
-    tarih.getFullYear() === today.getFullYear()
+tarih.getMonth() === today.getMonth() &&
+tarih.getFullYear() === today.getFullYear()
 );
 
 const gir=Number(r.tahsilat)||0;
@@ -381,14 +430,11 @@ mainLabels.push(r.tarih);
 const ad = normalize(String(r.kasa || "")).trim();
 
 console.log("KASA:", ad);
-
 console.log("KASA GELEN:", r.kasa, "→ normalize:", ad);
 
 function pushKasa(name){
 bakiyeKasa[name]+=fark;
 kasa[name].push(bakiyeKasa[name]);
-
-// YENİ EKLENEN
 hareketler[name].push(r);
 }
 
@@ -398,18 +444,69 @@ else if(ad.includes("nevsehir")) pushKasa("nevsehir");
 else if(ad.includes("sorgun")) pushKasa("sorgun");
 else if(ad.includes("bogazliyan")) pushKasa("bogazliyan");
 
-
+// 🔥 ALT KART DETAY
 if(buAyMi){
-    if(r.tip==="faturalı"){
-        fatG+=gir; 
-        fatC+=cik;
-    }else{
-        frG+=gir; 
-        frC+=cik;
-    }
+
+if(ad.includes("kirsehir")){
+if(r.tip==="faturalı"){ detay.kirsehir.fg+=gir; detay.kirsehir.fc+=cik; }
+else { detay.kirsehir.ng+=gir; detay.kirsehir.nc+=cik; }
+}
+
+if(ad.includes("aksaray")){
+if(r.tip==="faturalı"){ detay.aksaray.fg+=gir; detay.aksaray.fc+=cik; }
+else { detay.aksaray.ng+=gir; detay.aksaray.nc+=cik; }
+}
+
+if(ad.includes("nevsehir")){
+if(r.tip==="faturalı"){ detay.nevsehir.fg+=gir; detay.nevsehir.fc+=cik; }
+else { detay.nevsehir.ng+=gir; detay.nevsehir.nc+=cik; }
+}
+
+if(ad.includes("sorgun")){
+if(r.tip==="faturalı"){ detay.sorgun.fg+=gir; detay.sorgun.fc+=cik; }
+else { detay.sorgun.ng+=gir; detay.sorgun.nc+=cik; }
+}
+
+if(ad.includes("bogazliyan")){
+if(r.tip==="faturalı"){ detay.bogazliyan.fg+=gir; detay.bogazliyan.fc+=cik; }
+else { detay.bogazliyan.ng+=gir; detay.bogazliyan.nc+=cik; }
+}
+
 }
 
 });
+
+function yaz(id, deger){
+  const el = document.getElementById(id);
+  if(el) el.innerText = deger;
+}
+
+yaz("kirsehir_fg", detay.kirsehir.fg);
+yaz("kirsehir_fc", detay.kirsehir.fc);
+yaz("kirsehir_ng", detay.kirsehir.ng);
+yaz("kirsehir_nc", detay.kirsehir.nc);
+
+yaz("aksaray_fg", detay.aksaray.fg);
+yaz("aksaray_fc", detay.aksaray.fc);
+yaz("aksaray_ng", detay.aksaray.ng);
+yaz("aksaray_nc", detay.aksaray.nc);
+
+yaz("nevsehir_fg", detay.nevsehir.fg);
+yaz("nevsehir_fc", detay.nevsehir.fc);
+yaz("nevsehir_ng", detay.nevsehir.ng);
+yaz("nevsehir_nc", detay.nevsehir.nc);
+
+yaz("sorgun_fg", detay.sorgun.fg);
+yaz("sorgun_fc", detay.sorgun.fc);
+yaz("sorgun_ng", detay.sorgun.ng);
+yaz("sorgun_nc", detay.sorgun.nc);
+
+yaz("bogazliyan_fg", detay.bogazliyan.fg);
+yaz("bogazliyan_fc", detay.bogazliyan.fc);
+yaz("bogazliyan_ng", detay.bogazliyan.ng);
+yaz("bogazliyan_nc", detay.bogazliyan.nc);
+
+yaz("totalBalance", toplam + " ₺");
 
 const t = document.getElementById("totalBalance");
 if(t) t.innerText = toplam + " ₺";
