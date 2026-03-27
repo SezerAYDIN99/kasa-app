@@ -382,6 +382,10 @@ async function logout(){
 }
 
 function normalize(text){
+function formatMoney(val){
+  return Number(val || 0).toFixed(2);
+}
+
 return (text || "")
 .toLowerCase()
 .replaceAll("ı","i")
@@ -526,7 +530,7 @@ Object.keys(aylik).sort().forEach(ay => {
 
 function yaz(id, deger){
   const el = document.getElementById(id);
-  if(el) el.innerText = Number(deger).toFixed(2);
+  if(el) el.innerText = formatMoney(deger);
 }
 
 yaz("kirsehir_fg", detay.kirsehir.fg);
@@ -557,34 +561,34 @@ yaz("bogazliyan_nc", detay.bogazliyan.nc);
 yaz("totalBalance", toplam + " ₺");
 
 const t = document.getElementById("totalBalance");
-if(t) t.innerText = toplam + " ₺";
+if(t) t.innerText = formatMoney(toplam) + " ₺";
 
 const el1 = document.getElementById("fatGiris");
-if(el1) el1.innerText = fatG + " ₺";
+if(el1) el1.innerText = formatMoney(fatG) + " ₺";
 
 const el2 = document.getElementById("fatCikis");
-if(el2) el2.innerText = fatC + " ₺";
+if(el2) el2.innerText = formatMoney(fatC) + " ₺";
 
 const el3 = document.getElementById("fatrsizGiris");
-if(el3) el3.innerText = frG + " ₺";
+if(el3) el3.innerText = formatMoney(frG) + " ₺";
 
 const el4 = document.getElementById("fatrsizCikis");
-if(el4) el4.innerText = frC + " ₺";
+if(el4) el4.innerText = formatMoney(frC) + " ₺";
 
 const k1 = document.getElementById("kirsehir");
-if(k1) k1.innerText = bakiyeKasa.kirsehir + " ₺";
+if(k1) k1.innerText = formatMoney(bakiyeKasa.kirsehir) + " ₺";
 
 const k2 = document.getElementById("aksaray");
-if(k2) k2.innerText = bakiyeKasa.aksaray + " ₺";
+if(k2) k2.innerText = formatMoney(bakiyeKasa.aksaray) + " ₺";
 
 const k3 = document.getElementById("nevsehir");
-if(k3) k3.innerText = bakiyeKasa.nevsehir + " ₺";
+if(k3) k3.innerText = formatMoney(bakiyeKasa.nevsehir) + " ₺";
 
 const k4 = document.getElementById("sorgun");
-if(k4) k4.innerText = bakiyeKasa.sorgun + " ₺";
+if(k4) k4.innerText = formatMoney(bakiyeKasa.sorgun) + " ₺";
 
 const k5 = document.getElementById("bogazliyan");
-if(k5) k5.innerText = bakiyeKasa.bogazliyan + " ₺";
+if(k5) k5.innerText = formatMoney(bakiyeKasa.bogazliyan) + " ₺";
 new Chart(document.getElementById("mainChart"), {
   type: "line",
   data: {
