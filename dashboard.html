@@ -445,30 +445,35 @@ let detay = {
 
 let aylik = {};
 let mainChartData=[];
-
 let mainLabels=[];
 
 data.forEach(r=>{
 
-console.log("SATIR:", r);
+  const gir = Number(r.tahsilat)||0;
+  const cik = Number(r.tediye)||0;
+  const fark = gir - cik;
 
-const tarih = new Date(r.tarih);
-const buAyMi = (
-tarih.getMonth() === today.getMonth() &&
-tarih.getFullYear() === today.getFullYear()
-);
+  toplam += fark;
 
-const gir=Number(r.tahsilat)||0;
-const cik=Number(r.tediye)||0;
-const fark=gir-cik;
+  const d = new Date(r.tarih);
+  const ayKey = d.getFullYear() + "-" + (d.getMonth() + 1);
 
-toplam+=fark;
-const d = new Date(r.tarih);
-const ayKey = d.getFullYear() + "-" + (d.getMonth() + 1);
+  if(!aylik[ayKey]) aylik[ayKey] = 0;
+  aylik[ayKey] += fark;
 
-if(!aylik[ayKey]) aylik[ayKey] = 0;
-aylik[ayKey] += fark;
-}
+});
+Object.keys(aylik).sort().forEach(ay => {
+
+  const [yil, ayNo] = ay.split("-");
+
+  const ayIsim = new Date(yil, ayNo-1).toLocaleDateString("tr-TR", {
+    month: "short",
+    year: "numeric"
+  });
+
+  mainLabels.push(ayIsim);
+  mainChartData.push(aylik[ay]);
+});
 
 const ad = normalize(String(r.kasa || "")).trim();
 
@@ -530,13 +535,6 @@ Object.keys(aylik).sort().forEach(ay => {
 
   mainLabels.push(ayIsim);
   mainChartData.push(aylik[ay]);
-});
-
-let kümülatif = 0;
-
-mainChartData = mainChartData.map(v => {
-  kümülatif += v;
-  return kümülatif;
 });
 
 function yaz(id, deger){
@@ -777,4 +775,4 @@ window.onclick = function(e){
   </div>
 </div>
 </body>
-</html> 
+</html>
