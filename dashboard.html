@@ -345,6 +345,8 @@ let query = supabaseClient
 
 const { data, error } = await query;
 
+console.log("GELEN DATA:", data);
+
 if(error){
     alert(error.message);
     return;
