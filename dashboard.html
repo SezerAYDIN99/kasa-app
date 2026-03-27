@@ -164,10 +164,11 @@ th,td{
   <span style="font-weight:600; font-size:18px;">Kasa Paneli</span>
 </div>
 
-    <div class="user-menu">
-        <span class="user-name" id="userEmail">...</span>
-        <button class="logout-btn" onclick="logout()">⏻</button>
-    </div>
+<div class="user-menu">
+    <span class="user-name" id="userEmail">...</span>
+    <button class="logout-btn" onclick="logout()">⏻</button>
+</div>
+
 </div>
 
 <div class="container">
@@ -210,14 +211,11 @@ th,td{
 </div>
 
 </div>
-    <div id="totalBalance" class="big"></div>
-</div>
 
 <div class="card"><h4>Faturalı Giriş</h4><div id="fatGiris"></div><div id="ay1" class="small"></div></div>
 <div class="card"><h4>Faturalı Çıkış</h4><div id="fatCikis"></div><div id="ay2" class="small"></div></div>
 <div class="card"><h4>Faturasız Giriş</h4><div id="fatrsizGiris"></div><div id="ay3" class="small"></div></div>
 <div class="card"><h4>Faturasız Çıkış</h4><div id="fatrsizCikis"></div><div id="ay4" class="small"></div></div>
-</div>
 
 <br>
 
@@ -229,36 +227,36 @@ th,td{
 
 <div class="card">
   <h4>Kırşehir</h4>
-  <div id="kirsehir" class="big"></div>
-  <canvas id="c1"></canvas>
+  <div id="kirsehir2" class="big"></div>
+  <canvas id="c1_2"></canvas>
   <div id="kirsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
 
 <div class="card">
   <h4>Aksaray</h4>
-  <div id="aksaray" class="big"></div>
-  <canvas id="c2"></canvas>
+  <div id="aksaray2" class="big"></div>
+  <canvas id="c2_2"></canvas>
   <div id="aksarayList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
 
 <div class="card">
   <h4>Nevşehir</h4>
-  <div id="nevsehir" class="big"></div>
-  <canvas id="c3"></canvas>
+  <div id="nevsehir2" class="big"></div>
+  <canvas id="c3_2"></canvas>
   <div id="nevsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
 
 <div class="card">
   <h4>Sorgun</h4>
-  <div id="sorgun" class="big"></div>
-  <canvas id="c4"></canvas>
+  <div id="sorgun2" class="big"></div>
+  <canvas id="c4_2"></canvas>
   <div id="sorgunList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
 
 <div class="card">
   <h4>Boğazlıyan</h4>
-  <div id="bogazliyan" class="big"></div>
-  <canvas id="c5"></canvas>
+  <div id="bogazliyan2" class="big"></div>
+  <canvas id="c5_2"></canvas>
   <div id="bogazliyanList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
 </div>
 
@@ -336,6 +334,8 @@ let bakiyeKasa={kirsehir:0,aksaray:0,nevsehir:0,sorgun:0,bogazliyan:0};
 let fatG=0, fatC=0, frG=0, frC=0;
 let mainChartData=[];
 
+let mainLabels=[];
+
 data.forEach(r=>{
 
 const tarih = new Date(r.tarih);
@@ -396,7 +396,6 @@ document.getElementById("nevsehir").innerText=bakiyeKasa.nevsehir+" ₺";
 document.getElementById("sorgun").innerText=bakiyeKasa.sorgun+" ₺";
 document.getElementById("bogazliyan").innerText=bakiyeKasa.bogazliyan+" ₺";
 
-let mainLabels = [];
 new Chart(document.getElementById("mainChart"),{
 type:"line",
 data:{labels:mainLabels,datasets:[{label:"Toplam",data:mainChartData}]}
