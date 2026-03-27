@@ -661,22 +661,33 @@ console.log("EXCEL:", json);
 
 const { data: { user } } = await supabaseClient.auth.getUser();
 
-for(let row of json){
+for (let row of json) {
 
-const { error } = await supabaseClient.from("kasa_verileri").insert({
-    tarih: new Date((row.tarih - 25569) * 86400000).toISOString().split('T')[0],
-    kasa: row.kasa,
-    tip: row.tip,
-   aciklama:
-  row["açıklama"] ||
-  row["Açıklama"] ||
-  row["ACIKLAMA"] ||
-  "",
-    tahsilat: row.tahsilat || 0,
-    tediye: row.tediye || 0,
+  const findKey = (name) =>
+    Object.keys(row).find(k =>
+      k.toLowerCase().includes(name)
+    );
+
+  const tarihKey = findKey("tarih");
+  const kasaKey = findKey("kasa");
+  const tipKey = findKey("tip");
+  const aciklamaKey = findKey("aciklama") || findKey("açıklama");
+  const tahsilatKey = findKey("tahsilat");
+  const tediyeKey = findKey("tediye");
+
+  const { error } = await supabaseClient.from("kasa_verileri").insert({
+    tarih: tarihKey
+      ? new Date((row[tarihKey] - 25569) * 86400000).toISOString().split('T')[0]
+      : null,
+    kasa: kasaKey ? row[kasaKey] : "",
+    tip: tipKey ? row[tipKey] : "",
+    aciklama: aciklamaKey ? row[aciklamaKey] : "",
+    tahsilat: tahsilatKey ? row[tahsilatKey] : 0,
+    tediye: tediyeKey ? row[tediyeKey] : 0,
     para_birimi: "TL",
     user_id: user.id
-});
+  });
+
 
 if(error){
     console.error("INSERT HATA DETAY:", JSON.stringify(error, null, 2));
