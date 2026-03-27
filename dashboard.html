@@ -432,7 +432,7 @@ let detay = {
   bogazliyan:{fg:0,fc:0,ng:0,nc:0}
 };
 
-let gunluk = {};
+let aylik = {};
 let mainChartData=[];
 
 let mainLabels=[];
@@ -452,12 +452,11 @@ const cik=Number(r.tediye)||0;
 const fark=gir-cik;
 
 toplam+=fark;
-const gun = new Date(r.tarih).toISOString().split("T")[0];
+const d = new Date(r.tarih);
+const ayKey = d.getFullYear() + "-" + (d.getMonth() + 1);
 
-if(!gunluk[gun]) gunluk[gun] = 0;
-if(buAyMi){
-  if(!gunluk[gun]) gunluk[gun] = 0;
-  gunluk[gun] += fark;
+if(!aylik[ayKey]) aylik[ayKey] = 0;
+aylik[ayKey] += fark;
 }
 
 const ad = normalize(String(r.kasa || "")).trim();
@@ -509,14 +508,17 @@ else { detay.bogazliyan.ng+=gir; detay.bogazliyan.nc+=cik; }
 
 });
 
-Object.keys(gunluk).sort().forEach(gun => {
-  mainLabels.push(
-    new Date(gun).toLocaleDateString("tr-TR", {
-      day: "2-digit",
-      month: "2-digit"
-    })
-  );
-  mainChartData.push(gunluk[gun]);
+Object.keys(aylik).sort().forEach(ay => {
+
+  const [yil, ayNo] = ay.split("-");
+
+  const ayIsim = new Date(yil, ayNo-1).toLocaleDateString("tr-TR", {
+    month: "short",
+    year: "numeric"
+  });
+
+  mainLabels.push(ayIsim);
+  mainChartData.push(aylik[ay]);
 });
 
 let kümülatif = 0;
