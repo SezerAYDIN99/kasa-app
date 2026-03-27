@@ -656,10 +656,25 @@ const data = new Uint8Array(evt.target.result);
 const workbook = XLSX.read(data, { type: 'array' });
 
 const sheet = workbook.Sheets[workbook.SheetNames[0]];
-const json = XLSX.utils.sheet_to_json(sheet);
+const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 console.log("EXCEL:", json);
 
 const { data: { user } } = await supabaseClient.auth.getUser();
+
+
+// ✅ BURAYA KOY
+const cleanNumber = (val) => {
+  if (!val) return 0;
+
+  let str = String(val).trim();
+
+  // Eğer virgül varsa Türk formatıdır
+  if (str.includes(",")) {
+    str = str.replace(/\./g, "").replace(",", ".");
+  }
+
+  return Math.round((Number(str) + Number.EPSILON) * 100) / 100;
+};
 
 for (let row of json) {
 
@@ -682,8 +697,8 @@ for (let row of json) {
     kasa: kasaKey ? row[kasaKey] : "",
     tip: tipKey ? row[tipKey] : "",
     aciklama: aciklamaKey ? row[aciklamaKey] : "",
-    tahsilat: tahsilatKey ? Number(parseFloat(row[tahsilatKey]).toFixed(2)) : 0,
-    tediye: tediyeKey ? Number(parseFloat(row[tediyeKey]).toFixed(2)) : 0,
+    tahsilat: tahsilatKey ? cleanNumber(row[tahsilatKey]) : 0,
+    tediye: tediyeKey ? cleanNumber(row[tediyeKey]) : 0,
     para_birimi: "TL",
     user_id: user.id
   });
