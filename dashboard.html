@@ -682,8 +682,8 @@ for (let row of json) {
     kasa: kasaKey ? row[kasaKey] : "",
     tip: tipKey ? row[tipKey] : "",
     aciklama: aciklamaKey ? row[aciklamaKey] : "",
-    tahsilat: tahsilatKey ? row[tahsilatKey] : 0,
-    tediye: tediyeKey ? row[tediyeKey] : 0,
+    tahsilat: tahsilatKey ? Number(parseFloat(row[tahsilatKey]).toFixed(2)) : 0,
+    tediye: tediyeKey ? Number(parseFloat(row[tediyeKey]).toFixed(2)) : 0,
     para_birimi: "TL",
     user_id: user.id
   });
