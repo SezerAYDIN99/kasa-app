@@ -382,11 +382,14 @@ return (text || "")
 
 async function loadData(){
 
-const { data: { user } } = await supabaseClient.auth.getUser();
+console.log("LOADDATA ÇALIŞTI");
 
-console.log("USER:", user);
+  const { data: { user } } = await supabaseClient.auth.getUser();
 
-document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
+  console.log("USER:", user);
+
+  document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
+
 
 let query = supabaseClient
     .from("kasa_verileri")
