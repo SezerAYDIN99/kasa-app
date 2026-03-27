@@ -383,6 +383,7 @@ return (text || "")
 async function loadData(){
 
 console.log("LOADDATA ÇALIŞTI");
+console.log("EXCEL SATIR:", row);
 
   const { data: { user } } = await supabaseClient.auth.getUser();
 
