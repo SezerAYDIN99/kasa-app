@@ -280,12 +280,12 @@ th,td{
   <h4>Aksaray</h4>
   <div id="aksaray2" class="big"></div>
 
-  <div class="small" style="margin-top:8px;">
-    FG: <span id="aksaray_fg"></span> |
-    FÇ: <span id="aksaray_fc"></span><br>
-    NG: <span id="aksaray_ng"></span> |
-    NÇ: <span id="aksaray_nc"></span>
-  </div>
+  <div class="detay">
+  <div><span>Faturalı Giriş</span><span id="aksaray_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="aksaray_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="aksaray_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="aksaray_nc"></span></div>
+</div>
 
   <canvas id="c2_2"></canvas>
   <div id="aksarayList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
@@ -295,12 +295,12 @@ th,td{
   <h4>Nevşehir</h4>
   <div id="nevsehir2" class="big"></div>
 
-  <div class="small" style="margin-top:8px;">
-    FG: <span id="nevsehir_fg"></span> |
-    FÇ: <span id="nevsehir_fc"></span><br>
-    NG: <span id="nevsehir_ng"></span> |
-    NÇ: <span id="nevsehir_nc"></span>
-  </div>
+  <div class="detay">
+  <div><span>Faturalı Giriş</span><span id="nevsehir_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="nevsehir_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="nevsehir_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="nevsehir_nc"></span></div>
+</div>
 
   <canvas id="c3_2"></canvas>
   <div id="nevsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
@@ -310,12 +310,12 @@ th,td{
   <h4>Sorgun</h4>
   <div id="sorgun2" class="big"></div>
 
-  <div class="small" style="margin-top:8px;">
-    FG: <span id="sorgun_fg"></span> |
-    FÇ: <span id="sorgun_fc"></span><br>
-    NG: <span id="sorgun_ng"></span> |
-    NÇ: <span id="sorgun_nc"></span>
-  </div>
+  <div class="detay">
+  <div><span>Faturalı Giriş</span><span id="sorgun_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="sorgun_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="sorgun_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="sorgun_nc"></span></div>
+</div>
 
   <canvas id="c4_2"></canvas>
   <div id="sorgunList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
@@ -325,12 +325,12 @@ th,td{
   <h4>Boğazlıyan</h4>
   <div id="bogazliyan2" class="big"></div>
 
-  <div class="small" style="margin-top:8px;">
-    FG: <span id="bogazliyan_fg"></span> |
-    FÇ: <span id="bogazliyan_fc"></span><br>
-    NG: <span id="bogazliyan_ng"></span> |
-    NÇ: <span id="bogazliyan_nc"></span>
-  </div>
+  <div class="detay">
+  <div><span>Faturalı Giriş</span><span id="bogazliyan_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="bogazliyan_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="bogazliyan_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="bogazliyan_nc"></span></div>
+</div>
 
   <canvas id="c5_2"></canvas>
   <div id="bogazliyanList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
@@ -383,6 +383,9 @@ return (text || "")
 async function loadData(){
 
 const { data: { user } } = await supabaseClient.auth.getUser();
+
+console.log("USER:", user);
+
 document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
 
 let query = supabaseClient
