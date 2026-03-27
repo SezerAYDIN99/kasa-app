@@ -453,7 +453,12 @@ const fark=gir-cik;
 toplam+=fark;
 mainChartData.push(toplam);
 
-mainLabels.push(r.tarih);
+mainLabels.push(
+  new Date(r.tarih).toLocaleDateString("tr-TR", {
+    day: "2-digit",
+    month: "2-digit"
+  })
+);
 
 const ad = normalize(String(r.kasa || "")).trim();
 
@@ -565,9 +570,47 @@ if(k4) k4.innerText = bakiyeKasa.sorgun + " ₺";
 
 const k5 = document.getElementById("bogazliyan");
 if(k5) k5.innerText = bakiyeKasa.bogazliyan + " ₺";
-new Chart(document.getElementById("mainChart"),{
-type:"line",
-data:{labels:mainLabels,datasets:[{label:"Toplam",data:mainChartData}]}
+new Chart(document.getElementById("mainChart"), {
+  type: "line",
+  data: {
+    labels: mainLabels,
+    datasets: [{
+      label: "Toplam",
+      data: mainChartData,
+      borderWidth: 2,
+      tension: 0.3,
+      pointRadius: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: "#e2e8f0"
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "#94a3b8",
+          maxTicksLimit: 6
+        },
+        grid: {
+          display: false
+        }
+      },
+      y: {
+        ticks: {
+          color: "#94a3b8"
+        },
+        grid: {
+          color: "rgba(255,255,255,0.05)"
+        }
+      }
+    }
+  }
 });
 
 function c(id,data){
