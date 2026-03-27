@@ -458,10 +458,15 @@ data.forEach(r=>{
   const cik = Number(parseFloat(r.tediye || 0).toFixed(2));
   const fark = gir - cik;
 
-  const buAyMi = true;
+  const now = new Date();
+const d = new Date(r.tarih);
+
+const buAyMi =
+  d.getMonth() === now.getMonth() &&
+  d.getFullYear() === now.getFullYear();
 
   toplam += fark;
-  const d = new Date(r.tarih);
+  
   const ayKey = d.getFullYear() + "-" + (d.getMonth() + 1);
 
   if(!aylik[ayKey]) aylik[ayKey] = 0;
@@ -483,6 +488,14 @@ data.forEach(r=>{
 
   // 🔥 ALT KART DETAY
   if(buAyMi){
+
+  if(r.tip === "faturalı"){
+    fatG += gir;
+    fatC += cik;
+  }else{
+    frG += gir;
+    frC += cik;
+  }
 
     if(ad.includes("kirsehir")){
       if(r.tip==="faturalı"){ detay.kirsehir.fg+=gir; detay.kirsehir.fc+=cik; }
@@ -557,8 +570,6 @@ yaz("bogazliyan_fg", detay.bogazliyan.fg);
 yaz("bogazliyan_fc", detay.bogazliyan.fc);
 yaz("bogazliyan_ng", detay.bogazliyan.ng);
 yaz("bogazliyan_nc", detay.bogazliyan.nc);
-
-yaz("totalBalance", toplam + " ₺");
 
 const t = document.getElementById("totalBalance");
 if(t) t.innerText = formatMoney(toplam) + " ₺";
