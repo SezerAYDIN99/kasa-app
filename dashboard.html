@@ -378,7 +378,9 @@ mainChartData.push(toplam);
 
 mainLabels.push(r.tarih);
 
-const ad = normalize(r.kasa).trim();
+const ad = normalize(String(r.kasa || "")).trim();
+
+console.log("KASA:", ad);
 
 console.log("KASA GELEN:", r.kasa, "→ normalize:", ad);
 
