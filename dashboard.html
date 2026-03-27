@@ -158,6 +158,15 @@ th,td{
     border:1px solid #333;
     padding:8px;
 }
+
+.chart-wrapper{
+  width: 60%;
+  margin: 40px auto;
+}
+
+#mainChart{
+  height: 300px !important;
+}
 </style>
 
 </head>
@@ -255,7 +264,9 @@ th,td{
 
 <br>
 
-<canvas id="mainChart"></canvas>
+<div class="chart-wrapper">
+  <canvas id="mainChart"></canvas>
+</div>
 
 <br>
 
@@ -766,4 +777,4 @@ window.onclick = function(e){
   </div>
 </div>
 </body>
-</html>
+</html> 
