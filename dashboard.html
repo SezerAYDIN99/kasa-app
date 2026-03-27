@@ -1,3 +1,442 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<style>
+
+.detay div{
+  margin-bottom:6px;
+  font-size:13px;
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:4px 0;
+}
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:
+        linear-gradient(rgba(2,6,23,0.5), rgba(2,6,23,0.6)),
+        url("kasa.png");
+    background-size: cover;
+    background-position: center 35%;
+    background-attachment: fixed;
+    color:#e2e8f0;
+}
+/* NAVBAR */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 25px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color:white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.logo{ font-size:20px; font-weight:600; }
+
+.user-menu{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.user-name{
+    font-size:13px;
+    opacity:0.7;
+}
+
+.logout-btn{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:none;
+    background:rgba(255,255,255,0.08);
+    color:#ff4d4d;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.logout-btn:hover{
+    background:#ff2d2d;
+    color:white;
+    transform:scale(1.1);
+}
+
+.container{ padding:20px; }
+
+.grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding:20px;
+    border-radius:16px;
+    transition:0.3s;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+.big{ font-size:24px; font-weight:bold; }
+.small{ font-size:12px; opacity:0.6; margin-top:5px; }
+
+canvas{ width:100%!important; height:120px!important; }
+
+/* EXCEL */
+.excel-box{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    display:flex;
+    gap:10px;
+}
+
+.excel-btn{
+    background:rgba(255,255,255,0.08);
+    border:none;
+    padding:10px 15px;
+    border-radius:10px;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.excel-btn:hover{
+    background:#2563eb;
+}
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:#0f172a;
+    padding:20px;
+    border-radius:12px;
+    width:700px;
+    max-height:80%;
+    overflow:auto;
+}
+
+.close{
+    float:right;
+    cursor:pointer;
+    font-size:20px;
+}
+
+table{
+    width:100%;
+    margin-top:15px;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #333;
+    padding:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<input type="file" id="excelInput" />
+<button onclick="excelYukle()">Yükle</button>
+
+<div class="navbar">
+    <div class="logo" style="display:flex; align-items:center; gap:10px;">
+  <img src="kasa.png" style="width:40px;">
+  <span style="font-weight:600; font-size:18px;">Kasa Paneli</span>
+</div>
+
+<div class="user-menu">
+    <span class="user-name" id="userEmail">...</span>
+    <button class="logout-btn" onclick="logout()">⏻</button>
+</div>
+
+</div>
+
+<div class="container">
+
+<div class="grid">
+
+<div class="card">
+    <h4>Toplam</h4>
+    <div id="totalBalance" class="big"></div>
+</div>
+
+<div class="card" onclick="openModal('kirsehir')">
+  <h4>Kırşehir</h4>
+  <div id="kirsehir" class="big"></div>
+  <canvas id="c1"></canvas>
+</div>
+
+<div class="card" onclick="openModal('aksaray')">
+  <h4>Aksaray</h4>
+  <div id="aksaray" class="big"></div>
+  <canvas id="c2"></canvas>
+</div>
+
+<div class="card" onclick="openModal('nevsehir')">
+  <h4>Nevşehir</h4>
+  <div id="nevsehir" class="big"></div>
+  <canvas id="c3"></canvas>
+</div>
+
+<div class="card" onclick="openModal('sorgun')">
+  <h4>Sorgun</h4>
+  <div id="sorgun" class="big"></div>
+  <canvas id="c4"></canvas>
+</div>
+
+<div class="card" onclick="openModal('bogazliyan')">
+  <h4>Boğazlıyan</h4>
+  <div id="bogazliyan" class="big"></div>
+  <canvas id="c5"></canvas>
+</div>
+
+</div>
+
+<div class="card" style="margin-top:20px;">
+  <h3 style="margin-bottom:15px;">📊 Aylık Finans Özeti</h3>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:15px;">
+
+<div>
+  <div class="small">Faturalı Giriş</div>
+  <div id="fatGiris" class="big"></div>
+</div>
+
+<div>
+  <div class="small">Faturalı Çıkış</div>
+  <div id="fatCikis" class="big"></div>
+</div>
+
+<div>
+  <div class="small">Faturasız Giriş</div>
+  <div id="fatrsizGiris" class="big"></div>
+</div>
+
+<div>
+  <div class="small">Faturasız Çıkış</div>
+  <div id="fatrsizCikis" class="big"></div>
+</div>
+
+  </div>
+
+  <div style="margin-top:15px; font-size:12px; opacity:0.6;">
+    <span id="ay1"></span>
+  </div>
+</div>
+
+<br>
+
+<canvas id="mainChart"></canvas>
+
+<br>
+
+<div class="grid">
+
+<div class="card">
+  <h4>Kırşehir</h4>
+  <div id="kirsehir2" class="big"></div>
+
+<div class="detay">
+  <div><span>Faturalı Giriş</span><span id="kirsehir_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="kirsehir_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="kirsehir_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="kirsehir_nc"></span></div>
+</div>
+
+  <canvas id="c1_2"></canvas>
+  <div id="kirsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
+</div>
+
+<div class="card">
+  <h4>Aksaray</h4>
+  <div id="aksaray2" class="big"></div>
+
+  <div class="detay">
+  <div><span>Faturalı Giriş</span><span id="aksaray_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="aksaray_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="aksaray_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="aksaray_nc"></span></div>
+</div>
+
+  <canvas id="c2_2"></canvas>
+  <div id="aksarayList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
+</div>
+
+<div class="card">
+  <h4>Nevşehir</h4>
+  <div id="nevsehir2" class="big"></div>
+
+  <div class="detay">
+  <div><span>Faturalı Giriş</span><span id="nevsehir_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="nevsehir_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="nevsehir_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="nevsehir_nc"></span></div>
+</div>
+
+  <canvas id="c3_2"></canvas>
+  <div id="nevsehirList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
+</div>
+
+<div class="card">
+  <h4>Sorgun</h4>
+  <div id="sorgun2" class="big"></div>
+
+  <div class="detay">
+  <div><span>Faturalı Giriş</span><span id="sorgun_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="sorgun_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="sorgun_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="sorgun_nc"></span></div>
+</div>
+
+  <canvas id="c4_2"></canvas>
+  <div id="sorgunList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
+</div>
+
+<div class="card">
+  <h4>Boğazlıyan</h4>
+  <div id="bogazliyan2" class="big"></div>
+
+  <div class="detay">
+  <div><span>Faturalı Giriş</span><span id="bogazliyan_fg"></span></div>
+  <div><span>Faturalı Çıkış</span><span id="bogazliyan_fc"></span></div>
+  <div><span>Nakit Giriş</span><span id="bogazliyan_ng"></span></div>
+  <div><span>Nakit Çıkış</span><span id="bogazliyan_nc"></span></div>
+</div>
+
+  <canvas id="c5_2"></canvas>
+  <div id="bogazliyanList" style="font-size:12px; max-height:120px; overflow:auto;"></div>
+</div>
+
+</div>
+
+<div class="excel-box">
+    <a href="ornek.xlsx" download class="excel-btn">📥 Şablon</a>
+    <input type="file" id="fileInput" hidden>
+    <button id="uploadBtn" class="excel-btn" onclick="document.getElementById('fileInput').click()">📤 Yükle</button>
+</div>
+
+<script>
+
+let hareketler = {
+  kirsehir: [],
+  aksaray: [],
+  nevsehir: [],
+  sorgun: [],
+  bogazliyan: []
+};
+const supabaseClient = supabase.createClient(
+"https://ffzkszqwbnbemxifnsdf.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmemtzenF3Ym5iZW14aWZuc2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODgxOTYsImV4cCI6MjA4OTg2NDE5Nn0.WK5VFbA8iR3J5ePug3xTBCnIIIMHb7ZDjDJGrEahlb8"
+);
+
+const today = new Date();
+const ay = today.toLocaleString('tr-TR', { month: 'long', year: 'numeric' });
+
+const a1 = document.getElementById("ay1");
+if(a1) a1.innerText = ay;
+
+async function logout(){
+    await supabaseClient.auth.signOut();
+    location.href="index.html";
+}
+
+function normalize(text){
+return (text || "")
+.toLowerCase()
+.replaceAll("ı","i")
+.replaceAll("ğ","g")
+.replaceAll("ş","s")
+.replaceAll("ö","o")
+.replaceAll("ü","u")
+.replaceAll("ç","c");
+}
+
+async function loadData(){
+
+console.log("LOADDATA ÇALIŞTI");
+
+  const { data: { user } } = await supabaseClient.auth.getUser();
+
+  console.log("USER:", user);
+
+  document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
+
+
+let query;
+
+if(user.email === "admin@test.com"){
+  // 👑 ADMIN → HERKESİ GÖRÜR
+  query = supabaseClient
+    .from("kasa_verileri")
+    .select("*")
+    .order("tarih", { ascending: true });
+
+}else{
+  // 👤 NORMAL → SADECE KENDİSİ
+  query = supabaseClient
+    .from("kasa_verileri")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("tarih", { ascending: true });
+}
+
+const { data, error } = await query;
+
+console.log("GELEN DATA:", data);
+
+if(error){
+    alert(error.message);
+    return;
+}
+
+let toplam=0;
+
+let kasa={kirsehir:[],aksaray:[],nevsehir:[],sorgun:[],bogazliyan:[]};
+let bakiyeKasa={kirsehir:0,aksaray:0,nevsehir:0,sorgun:0,bogazliyan:0};
+let fatG=0, fatC=0, frG=0, frC=0;
+
+let detay = {
+  kirsehir:{fg:0,fc:0,ng:0,nc:0},
+  aksaray:{fg:0,fc:0,ng:0,nc:0},
+  nevsehir:{fg:0,fc:0,ng:0,nc:0},
+  sorgun:{fg:0,fc:0,ng:0,nc:0},
+  bogazliyan:{fg:0,fc:0,ng:0,nc:0}
+};
+
+let gunluk = {};
+let mainChartData=[];
+
+let mainLabels=[];
+
 data.forEach(r=>{
 
 console.log("SATIR:", r);
@@ -76,3 +515,250 @@ Object.keys(gunluk).sort().forEach(gun => {
   );
   mainChartData.push(gunluk[gun]);
 });
+
+let kümülatif = 0;
+
+mainChartData = mainChartData.map(v => {
+  kümülatif += v;
+  return kümülatif;
+});
+
+function yaz(id, deger){
+  const el = document.getElementById(id);
+  if(el) el.innerText = deger;
+}
+
+yaz("kirsehir_fg", detay.kirsehir.fg);
+yaz("kirsehir_fc", detay.kirsehir.fc);
+yaz("kirsehir_ng", detay.kirsehir.ng);
+yaz("kirsehir_nc", detay.kirsehir.nc);
+
+yaz("aksaray_fg", detay.aksaray.fg);
+yaz("aksaray_fc", detay.aksaray.fc);
+yaz("aksaray_ng", detay.aksaray.ng);
+yaz("aksaray_nc", detay.aksaray.nc);
+
+yaz("nevsehir_fg", detay.nevsehir.fg);
+yaz("nevsehir_fc", detay.nevsehir.fc);
+yaz("nevsehir_ng", detay.nevsehir.ng);
+yaz("nevsehir_nc", detay.nevsehir.nc);
+
+yaz("sorgun_fg", detay.sorgun.fg);
+yaz("sorgun_fc", detay.sorgun.fc);
+yaz("sorgun_ng", detay.sorgun.ng);
+yaz("sorgun_nc", detay.sorgun.nc);
+
+yaz("bogazliyan_fg", detay.bogazliyan.fg);
+yaz("bogazliyan_fc", detay.bogazliyan.fc);
+yaz("bogazliyan_ng", detay.bogazliyan.ng);
+yaz("bogazliyan_nc", detay.bogazliyan.nc);
+
+yaz("totalBalance", toplam + " ₺");
+
+const t = document.getElementById("totalBalance");
+if(t) t.innerText = toplam + " ₺";
+
+const el1 = document.getElementById("fatGiris");
+if(el1) el1.innerText = fatG + " ₺";
+
+const el2 = document.getElementById("fatCikis");
+if(el2) el2.innerText = fatC + " ₺";
+
+const el3 = document.getElementById("fatrsizGiris");
+if(el3) el3.innerText = frG + " ₺";
+
+const el4 = document.getElementById("fatrsizCikis");
+if(el4) el4.innerText = frC + " ₺";
+
+const k1 = document.getElementById("kirsehir");
+if(k1) k1.innerText = bakiyeKasa.kirsehir + " ₺";
+
+const k2 = document.getElementById("aksaray");
+if(k2) k2.innerText = bakiyeKasa.aksaray + " ₺";
+
+const k3 = document.getElementById("nevsehir");
+if(k3) k3.innerText = bakiyeKasa.nevsehir + " ₺";
+
+const k4 = document.getElementById("sorgun");
+if(k4) k4.innerText = bakiyeKasa.sorgun + " ₺";
+
+const k5 = document.getElementById("bogazliyan");
+if(k5) k5.innerText = bakiyeKasa.bogazliyan + " ₺";
+new Chart(document.getElementById("mainChart"), {
+  type: "line",
+  data: {
+    labels: mainLabels,
+    datasets: [{
+      label: "Toplam",
+      data: mainChartData,
+      borderWidth: 2,
+      tension: 0.3,
+      pointRadius: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: "#e2e8f0"
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "#94a3b8",
+          maxTicksLimit: 6
+        },
+        grid: {
+          display: false
+        }
+      },
+      y: {
+        ticks: {
+          color: "#94a3b8"
+        },
+        grid: {
+          color: "rgba(255,255,255,0.05)"
+        }
+      }
+    }
+  }
+});
+
+function c(id,data){
+new Chart(document.getElementById(id),{
+type:"line",
+data:{labels:data.map((_,i)=>i),datasets:[{label:"Bakiye",data:data}]}
+});
+}
+
+c("c1",kasa.kirsehir);
+c("c2",kasa.aksaray);
+c("c3",kasa.nevsehir);
+c("c4",kasa.sorgun);
+c("c5",kasa.bogazliyan);
+
+}
+
+document.getElementById("fileInput").addEventListener("change", async function(e){
+
+const file = e.target.files[0];
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = async function(evt){
+document.getElementById("loading").style.display = "block";
+const data = new Uint8Array(evt.target.result);
+const workbook = XLSX.read(data, { type: 'array' });
+
+const sheet = workbook.Sheets[workbook.SheetNames[0]];
+const json = XLSX.utils.sheet_to_json(sheet);
+console.log("EXCEL:", json);
+
+const { data: { user } } = await supabaseClient.auth.getUser();
+
+for(let row of json){
+
+const { error } = await supabaseClient.from("kasa_verileri").insert({
+    tarih: new Date((row.tarih - 25569) * 86400000).toISOString().split('T')[0],
+    kasa: row.kasa,
+    tip: row.tip,
+   aciklama:
+  row["açıklama"] ||
+  row["Açıklama"] ||
+  row["ACIKLAMA"] ||
+  "",
+    tahsilat: row.tahsilat || 0,
+    tediye: row.tediye || 0,
+    para_birimi: "TL",
+    user_id: user.id
+});
+
+if(error){
+    console.error("INSERT HATA DETAY:", JSON.stringify(error, null, 2));
+    alert("Hata var! F12 aç");
+    return;
+}
+
+}
+
+alert("Yükleme tamamlandı!");
+location.reload();
+
+};
+
+reader.readAsArrayBuffer(file);
+
+});
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadData();
+    });
+
+// 🔥 BURAYA EKLE
+function openModal(kasa){
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("modalTitle").innerText = kasa.toUpperCase() + " Hareketleri";
+
+  const body = document.getElementById("modalBody");
+  body.innerHTML = "";
+
+  hareketler[kasa].forEach(r => {
+    console.log("ACILMIS:", JSON.stringify(r, null, 2));
+
+const tutar = (Number(r.tahsilat||0) - Number(r.tediye||0));
+
+    const row = `
+      <tr>
+        <td>${r.tarih}</td>
+        <td>${r.tip}</td>
+        <td>${tutar} ₺</td>
+        <td>${r.aciklama || r.açıklama || "-"}</td>
+      </tr>
+    `;
+
+    body.innerHTML += row;
+  });
+}
+
+function closeModal(){
+  document.getElementById("modal").style.display = "none";
+}
+
+window.onclick = function(e){
+  if(e.target.id === "modal"){
+    closeModal();
+  }
+}
+
+</script>
+
+</script>
+<div id="loading" class="loading">
+    Yükleniyor...
+</div>
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">×</span>
+    <h3 id="modalTitle"></h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Tarih</th>
+          <th>Tür</th>
+          <th>Tutar</th>
+          <th>Açıklama</th>
+        </tr>
+      </thead>
+      <tbody id="modalBody"></tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>
