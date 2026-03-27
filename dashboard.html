@@ -316,9 +316,10 @@ let query = supabaseClient
     .select("*")
     .order("tarih", { ascending: true });
 
-if(user.email.toLowerCase() !== "admin@test.com"){
-    query = query.eq("user_id", user.id);
-}
+let query = supabaseClient
+    .from("kasa_verileri")
+    .select("*")
+    .order("tarih", { ascending: true });
 
 const { data, error } = await query;
 
