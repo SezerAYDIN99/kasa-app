@@ -609,7 +609,11 @@ const { error } = await supabaseClient.from("kasa_verileri").insert({
     tarih: new Date((row.tarih - 25569) * 86400000).toISOString().split('T')[0],
     kasa: row.kasa,
     tip: row.tip,
-    aciklama: row.aciklama || row.açıklama || row["Açıklama"] || "",
+   aciklama:
+  row["açıklama"] ||
+  row["Açıklama"] ||
+  row["ACIKLAMA"] ||
+  "",
     tahsilat: row.tahsilat || 0,
     tediye: row.tediye || 0,
     para_birimi: "TL",
