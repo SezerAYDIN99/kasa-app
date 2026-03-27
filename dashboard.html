@@ -386,7 +386,7 @@ console.log("LOADDATA ÇALIŞTI");
 
   const { data: { user } } = await supabaseClient.auth.getUser();
 
-  console.log("USER:", user);
+  console.error("USER:", user);
 
   document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
 
