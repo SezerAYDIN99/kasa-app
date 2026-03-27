@@ -409,18 +409,35 @@ if(buAyMi){
 
 });
 
-document.getElementById("totalBalance").innerText=toplam+" ₺";
-document.getElementById("fatGiris").innerText=fatG+" ₺";
-document.getElementById("fatCikis").innerText=fatC+" ₺";
-document.getElementById("fatrsizGiris").innerText=frG+" ₺";
-document.getElementById("fatrsizCikis").innerText=frC+" ₺";
+const t = document.getElementById("totalBalance");
+if(t) t.innerText = toplam + " ₺";
 
-document.getElementById("kirsehir").innerText=bakiyeKasa.kirsehir+" ₺";
-document.getElementById("aksaray").innerText=bakiyeKasa.aksaray+" ₺";
-document.getElementById("nevsehir").innerText=bakiyeKasa.nevsehir+" ₺";
-document.getElementById("sorgun").innerText=bakiyeKasa.sorgun+" ₺";
-document.getElementById("bogazliyan").innerText=bakiyeKasa.bogazliyan+" ₺";
+const el1 = document.getElementById("fatGiris");
+if(el1) el1.innerText = fatG + " ₺";
 
+const el2 = document.getElementById("fatCikis");
+if(el2) el2.innerText = fatC + " ₺";
+
+const el3 = document.getElementById("fatrsizGiris");
+if(el3) el3.innerText = frG + " ₺";
+
+const el4 = document.getElementById("fatrsizCikis");
+if(el4) el4.innerText = frC + " ₺";
+
+const k1 = document.getElementById("kirsehir");
+if(k1) k1.innerText = bakiyeKasa.kirsehir + " ₺";
+
+const k2 = document.getElementById("aksaray");
+if(k2) k2.innerText = bakiyeKasa.aksaray + " ₺";
+
+const k3 = document.getElementById("nevsehir");
+if(k3) k3.innerText = bakiyeKasa.nevsehir + " ₺";
+
+const k4 = document.getElementById("sorgun");
+if(k4) k4.innerText = bakiyeKasa.sorgun + " ₺";
+
+const k5 = document.getElementById("bogazliyan");
+if(k5) k5.innerText = bakiyeKasa.bogazliyan + " ₺";
 new Chart(document.getElementById("mainChart"),{
 type:"line",
 data:{labels:mainLabels,datasets:[{label:"Toplam",data:mainChartData}]}
