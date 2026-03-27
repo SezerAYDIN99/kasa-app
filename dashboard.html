@@ -391,10 +391,23 @@ console.log("LOADDATA ÇALIŞTI");
   document.getElementById("userEmail").innerText = user?.email || "Kullanıcı";
 
 
-let query = supabaseClient
+let query;
+
+if(user.email === "admin@test.com"){
+  // 👑 ADMIN → HERKESİ GÖRÜR
+  query = supabaseClient
     .from("kasa_verileri")
     .select("*")
     .order("tarih", { ascending: true });
+
+}else{
+  // 👤 NORMAL → SADECE KENDİSİ
+  query = supabaseClient
+    .from("kasa_verileri")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("tarih", { ascending: true });
+}
 
 const { data, error } = await query;
 
