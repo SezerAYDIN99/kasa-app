@@ -647,7 +647,7 @@ function openModal(kasa){
   body.innerHTML = "";
 
   hareketler[kasa].forEach(r => {
-    console.log(r);
+    console.log("ACILMIS:", JSON.stringify(r, null, 2));
 
 const tutar = (Number(r.tahsilat||0) - Number(r.tediye||0));
 
