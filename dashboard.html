@@ -329,7 +329,7 @@ th,td{
         <!-- 🔥 MENÜ BURAYA -->
         <div class="menu" style="display:flex; gap:15px; margin-left:30px;">
 
-            <a href="#" onclick="showPanel('kasa')">Kasa</a>
+            <a href="javascript:void(0)" onclick="showPanel('kasa')">Kasa</a>
             <a href="pos.html">POS</a>
             <a href="stok.html">Stok</a>
             <a href="maliyet.html">Maliyet</a>
@@ -1040,12 +1040,18 @@ window.onclick = function(e){
 }
 async function showPanel(panel){
 
+  console.log("TIKLANDI:", panel); // test
+
   document.getElementById("kasaPanel").style.display = "none";
   document.getElementById("homePanel").style.display = "none";
 
   if(panel === "kasa"){
     document.getElementById("kasaPanel").style.display = "block";
     await loadData();
+  }
+
+  if(panel === "home"){
+    document.getElementById("homePanel").style.display = "block";
   }
 
 }
