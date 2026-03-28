@@ -304,9 +304,7 @@ th,td{
   font-size:13px;
   opacity:0.6;
 }
-#homePanel{
-  display:none !important;
-}
+
 </style>
 
 </head>
@@ -985,15 +983,22 @@ reader.readAsArrayBuffer(file);
 
 window.onload = async function(){
 
-  document.getElementById("homePanel").style.display = "none";
-  document.getElementById("kasaPanel").style.display = "block";
+  const { data: { user } } = await supabaseClient.auth.getUser();
 
-  document.body.style.overflow = "auto";  
-  document.body.style.height = "auto";  
+  console.log("GİRİŞ KONTROL:", user);
 
-  await loadData();
+  if(user){
+    // ✅ giriş yapmış → kasa aç
+    document.getElementById("kasaPanel").style.display = "block";
+    document.getElementById("homePanel").style.display = "none";
 
-  window.scrollTo(0, 500); // EKLE
+    await loadData();
+
+  }else{
+    // ❌ giriş yok → home göster
+    document.getElementById("homePanel").style.display = "block";
+    document.getElementById("kasaPanel").style.display = "none";
+  }
 
 };
 
