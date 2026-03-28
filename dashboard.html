@@ -991,14 +991,14 @@ window.onload = async function(){
   console.log("GİRİŞ KONTROL:", user);
 
   if(user){
-    // ✅ giriş yapmış → kasa aç
     document.getElementById("kasaPanel").style.display = "block";
     document.getElementById("homePanel").style.display = "none";
 
     await loadData();
 
+    window.scrollTo(0, 300);
+
   }else{
-    // ❌ giriş yok → home göster
     document.getElementById("homePanel").style.display = "block";
     document.getElementById("kasaPanel").style.display = "none";
   }
