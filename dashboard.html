@@ -160,7 +160,7 @@ th,td{
 }
 
 .chart-wrapper{
-  width: 40%;
+  width: 90%;
   margin: 30px auto;
 
 }
@@ -300,6 +300,9 @@ th,td{
 .ceo span{
   font-size:13px;
   opacity:0.6;
+}
+#homePanel{
+  display:none !important;
 }
 </style>
 
@@ -586,8 +589,6 @@ const supabaseClient = supabase.createClient(
 const today = new Date();
 const ay = today.toLocaleString('tr-TR', { month: 'long', year: 'numeric' });
 
-const a1 = document.getElementById("ay1");
-if(a1) a1.innerText = ay;
 
 async function logout(){
     await supabaseClient.auth.signOut();
@@ -615,6 +616,9 @@ Object.values(charts).forEach(ch => ch.destroy());
 charts = {};
 
 console.log("LOADDATA ÇALIŞTI");
+
+  const a1 = document.getElementById("ay1");
+if(a1) a1.innerText = ay;
 
   const { data: { user } } = await supabaseClient.auth.getUser();
 
