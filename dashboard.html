@@ -759,10 +759,22 @@ Object.keys(aylik).sort().forEach(ay => {
     year: "numeric"
   });
 
-  mainLabels.push(ayIsim);
-  mainChartData.push(aylik[ay]);
-});
+let runningTotal = 0;
 
+Object.keys(aylik).sort().forEach(ay => {
+
+  runningTotal += aylik[ay]; // 🔥 biriken bakiye
+
+  const [yil, ayNo] = ay.split("-");
+
+  const ayIsim = new Date(yil, ayNo-1).toLocaleDateString("tr-TR", {
+    month: "short",
+    year: "numeric"
+  });
+
+  mainLabels.push(ayIsim);
+  mainChartData.push(runningTotal); // 🔥 artık düzgün grafik
+});
 
 
 function yaz(id, deger){
@@ -835,40 +847,70 @@ if (mainChartInstance) {
 }
 
 if(chartEl){
-  mainChartInstance = new Chart(chartEl, {
+
+  const ctx = chartEl.getContext("2d");
+
+  // 🔥 gradient arka plan
+  const gradient = ctx.createLinearGradient(0, 0, 0, 250);
+  gradient.addColorStop(0, "rgba(37,99,235,0.5)");
+  gradient.addColorStop(1, "rgba(37,99,235,0)");
+
+  mainChartInstance = new Chart(ctx, {
     type: "line",
     data: {
       labels: mainLabels,
       datasets: [{
-        label: "Toplam",
+        label: "Toplam Bakiye",
         data: mainChartData,
-        borderWidth: 2,
-        tension: 0.3,
-        pointRadius: 0
+
+        borderColor: "#3b82f6",
+        backgroundColor: gradient,
+        fill: true,
+
+        tension: 0.4,
+        borderWidth: 3,
+
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#3b82f6",
+        pointBorderColor: "#0f172a"
       }]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
+
+      interaction: {
+        mode: "index",
+        intersect: false
+      },
+
       plugins: {
         legend: {
-          labels: {
-            color: "#e2e8f0"
+          display: false
+        },
+        tooltip: {
+          backgroundColor: "#0f172a",
+          bodyColor: "#e2e8f0",
+          borderColor: "#3b82f6",
+          borderWidth: 1,
+          callbacks: {
+            label: function(ctx){
+              return ctx.raw.toLocaleString("tr-TR") + " ₺";
+            }
           }
         }
       },
-      scales: {   // ✅ DOĞRU YER
+
+      scales: {
         x: {
-          ticks: {
-            color: "#94a3b8",
-            maxTicksLimit: 6
-          },
-          grid: {
-            display: false
-          }
+          ticks: { color: "#94a3b8" },
+          grid: { display: false }
         },
         y: {
           ticks: {
-            color: "#94a3b8"
+            color: "#94a3b8",
+            callback: val => val.toLocaleString("tr-TR")
           },
           grid: {
             color: "rgba(255,255,255,0.05)"
@@ -877,8 +919,7 @@ if(chartEl){
       }
     }
   });
-}
-function c(id, data){
+}function c(id, data){
 
   if(charts[id]){
     charts[id].destroy();
