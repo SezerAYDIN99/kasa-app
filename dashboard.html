@@ -611,6 +611,9 @@ function normalize(text){
 
 async function loadData(){
 
+Object.values(charts).forEach(ch => ch.destroy());
+charts = {};
+
 console.log("LOADDATA ÇALIŞTI");
 
   const { data: { user } } = await supabaseClient.auth.getUser();
