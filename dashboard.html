@@ -991,14 +991,12 @@ window.onload = async function(){
   console.log("GİRİŞ KONTROL:", user);
 
   if(user){
-    document.getElementById("kasaPanel").style.display = "block";
-    document.getElementById("homePanel").style.display = "none";
-
-    await loadData();
-
-    window.scrollTo(0, 300);
+    // 🔥 SADECE HOME GÖSTER
+    document.getElementById("homePanel").style.display = "block";
+    document.getElementById("kasaPanel").style.display = "none";
 
   }else{
+    // login yoksa login sayfasına atabilirsin
     document.getElementById("homePanel").style.display = "block";
     document.getElementById("kasaPanel").style.display = "none";
   }
