@@ -810,7 +810,9 @@ if(k4) k4.innerText = formatMoney(bakiyeKasa.sorgun) + " ₺";
 
 const k5 = document.getElementById("bogazliyan");
 if(k5) k5.innerText = formatMoney(bakiyeKasa.bogazliyan) + " ₺";
-new Chart(document.getElementById("mainChart"), {
+const chartEl = document.getElementById("mainChart");
+if(chartEl){
+  new Chart(chartEl, {
   type: "line",
   data: {
     labels: mainLabels,
@@ -852,6 +854,7 @@ new Chart(document.getElementById("mainChart"), {
     }
   }
 });
+}
 
 function c(id,data){
 new Chart(document.getElementById(id),{
