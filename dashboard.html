@@ -399,7 +399,7 @@ Kurumsallaşma sürecinde hayata geçirilen organizasyonel dönüşüm ve yenide
 Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan ortaklığında faaliyetlerini sürdürmekte olup, güçlü kurumsal altyapısı, deneyimli insan kaynağı ve yenilikçi yönetim anlayışı ile sektöründe güvenilir, sürdürülebilir ve öncü bir marka olma vizyonunu kararlılıkla devam ettirmektedir.
   </p>
 </div>
-<div id="kasaPanel" style="display:block;">
+<div id="kasaPanel" style="display:none;">
 <div class="container">
 
 <div class="grid">
@@ -977,7 +977,9 @@ reader.readAsArrayBuffer(file);
 
 
 window.onload = async function(){
-  await showPanel("kasa");
+  document.getElementById("homePanel").style.display = "none";
+  document.getElementById("kasaPanel").style.display = "block";
+  await loadData();
 };
 
 // 🔥 BURAYA EKLE
