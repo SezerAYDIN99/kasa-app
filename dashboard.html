@@ -168,6 +168,138 @@ th,td{
 #mainChart{
   height: 220px !important;
 }
+.menu a{
+  color:#cbd5f5;
+  text-decoration:none;
+  font-size:14px;
+  padding:6px 10px;
+  border-radius:8px;
+  transition:0.3s;
+}
+
+.menu a:hover{
+  background:rgba(255,255,255,0.1);
+  color:white;
+}
+
+.menu a.active{
+  background:#2563eb;
+  color:white;
+}
+.home{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.home h1{
+  font-size:40px;
+  margin-bottom:10px;
+}
+
+.subtitle{
+  opacity:0.6;
+  margin-bottom:15px;
+}
+
+.desc{
+  opacity:0.7;
+  margin-bottom:40px;
+}
+
+.home-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 sabit kolon */
+  gap:30px;
+  max-width:1400px;
+  margin:0 auto;
+}
+
+.home-card{
+  background: rgba(255,255,255,0.06);
+  padding:40px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.1);
+  transition:0.3s;
+  min-height:260px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  cursor: pointer;
+}
+
+.home-card:hover{
+  transform: translateY(-8px);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+.about{
+  margin-top:80px;
+  max-width:900px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+}
+
+.about h2{
+  font-size:28px;
+  margin-bottom:20px;
+}
+
+.about p{
+  opacity:0.7;
+  font-size:15px;
+  line-height:1.8;
+}
+.ceo p{
+  font-size:16px;
+  line-height:1.8;
+}
+.home-card h3{
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.home-card h3::after{
+  content: "";
+  width: 40px;
+  height: 3px;
+  background: #2563eb;
+  display: block;
+  margin-top: 8px;
+  border-radius: 2px;
+}
+.home{
+  animation: fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+.ceo{
+  grid-column: 1 / -1;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.ceo strong{
+  display:block;
+  margin-top:20px;
+  padding-top:15px;
+  border-top:1px solid rgba(255,255,255,0.1);
+  font-size:18px;
+}
+
+.ceo span{
+  font-size:13px;
+  opacity:0.6;
+}
 </style>
 
 </head>
@@ -178,10 +310,33 @@ th,td{
 <button onclick="excelYukle()">Yükle</button>
 
 <div class="navbar">
-    <div class="logo" style="display:flex; align-items:center; gap:10px;">
-  <img src="kasa.png" style="width:40px;">
-  <span style="font-weight:600; font-size:18px;">Kasa Paneli</span>
+
+    <div style="display:flex; align-items:center;">
+
+        <div class="logo" style="display:flex; align-items:center; gap:10px;">
+            <img src="kasa.png" style="width:40px;">
+            <div style="display:flex; flex-direction:column;">
+  <span style="font-weight:600; font-size:18px;">Çağ Taşıt</span>
+  <span style="font-size:11px; opacity:0.6;">Finans Yönetim Sistemi</span>
 </div>
+        </div>
+
+        <!-- 🔥 MENÜ BURAYA -->
+        <div class="menu" style="display:flex; gap:15px; margin-left:30px;">
+
+            <a href="#" onclick="showPanel('kasa')">Kasa</a>
+            <a href="pos.html">POS</a>
+            <a href="stok.html">Stok</a>
+            <a href="maliyet.html">Maliyet</a>
+            <a href="satis.html">Satış</a>
+            <a href="alis.html">Alış</a>
+            <a href="cari.html">Cari</a>
+            <a href="ceksenet.html">Çek/Senet</a>
+            <a href="karzarar.html">Kar/Zarar</a>
+
+        </div>
+
+    </div>
 
 <div class="user-menu">
     <span class="user-name" id="userEmail">...</span>
@@ -189,7 +344,61 @@ th,td{
 </div>
 
 </div>
+<div id="homePanel" class="home">
 
+  <h1>Çağ Taşıt</h1>
+  <p class="subtitle">Finans Yönetim Sistemi</p>
+
+  <p class="desc">
+    İşletmenizin tüm finans süreçlerini tek merkezden yönetin,
+    kontrolü elinizde tutun ve geleceğe güvenle ilerleyin.
+  </p>
+
+  <div class="home-grid">
+
+    <div class="home-card">
+      <h3>Vizyon</h3>
+      <p>Tüm finans süreçlerini tek merkezden yönetebilen güçlü bir sistem.</p>
+    </div>
+
+    <div class="home-card">
+      <h3>Misyon</h3>
+      <p>Finans verilerini sade ve kontrol edilebilir hale getirmek.</p>
+    </div>
+
+   
+<div class="home-card ceo">
+  <h3>CEO Mesajı</h3>
+  <p>
+    1960 yılından bu yana köklü değerlerimiz ve güçlü vizyonumuz ile faaliyetlerimizi sürdürmekteyiz. 
+    Müşteri memnuniyeti, sürdürülebilir büyüme ve güven ilkeleri doğrultusunda, bölgemizde kalıcı değer üretmeye devam ediyoruz.
+
+    Çağ Taşıt olarak, güçlü altyapımız ve deneyimli kadromuz ile geleceğe emin adımlarla ilerlemekteyiz.
+
+    Saygılarımızla,
+  </p>
+
+  <br><br>
+
+  <strong>Ferhat Çağlayan</strong><br>
+  <span style="opacity:0.6;">Yönetim Kurulu Başkanı</span>
+</div>
+
+  <div class="about">
+  <h2>Hakkımızda</h2>
+  <p>
+    ÇAĞ Topluluğu, 1960 yılında temelleri atılmış köklü bir aile girişimi olarak, bugün başta otomotiv ve tarım olmak üzere farklı sektörlerde faaliyet gösteren, bölgesinde güçlü ve sürdürülebilir bir organizasyona dönüşmüştür. Kuruluşundan bu yana benimsediği uzun vadeli büyüme vizyonu, stratejik yatırım yaklaşımı ve bölgesel kalkınmaya katkı sağlama hedefi doğrultusunda hareket eden topluluk, istihdam yaratmayı ve ekonomik değer üretmeyi temel ilkeleri arasında konumlandırmaktadır.
+
+Gerçekleştirilen planlı ve stratejik yatırımlar sayesinde faaliyet alanlarını istikrarlı biçimde genişleten ÇAĞ TAŞIT, özellikle otomotiv ve tarım sektörlerinde bölgesel liderliğini pekiştirmiştir. Hyundai otomotiv bayilikleri ve Case IH traktör distribütörlükleri kapsamında; Kırşehir, Aksaray, Nevşehir ve Yozgat illerinde konumlanan modern plaza, servis ve showroom yatırımları ile müşterilerine satış ve satış sonrası hizmetlerde yüksek kalite standartları sunmaktadır. Müşteri memnuniyetini merkeze alan hizmet anlayışı, markanın sürdürülebilir başarısının temelini oluşturmaktadır.
+
+Kurumsallaşma sürecinde hayata geçirilen organizasyonel dönüşüm ve yeniden yapılanma adımları ile birlikte grup şirketleri daha odaklı, verimli ve stratejik bir yapıya kavuşturulmuştur. Bu kapsamda bazı iştirak ve yatırımlar farklı yapılanmalar altında faaliyetlerini sürdürürken, mevcut organizasyon uzun vadeli hedefler doğrultusunda yeniden yapılandırılmış ve konumlandırılmıştır.
+
+Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan ortaklığında faaliyetlerini sürdürmekte olup, güçlü kurumsal altyapısı, deneyimli insan kaynağı ve yenilikçi yönetim anlayışı ile sektöründe güvenilir, sürdürülebilir ve öncü bir marka olma vizyonunu kararlılıkla devam ettirmektedir.
+  </p>
+</div>
+
+</div>
+<div id="kasaPanel" style="display:none;">
 <div class="container">
 
 <div class="grid">
@@ -738,9 +947,8 @@ reader.readAsArrayBuffer(file);
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await loadData();
-    });
-
+    document.getElementById("homePanel").style.display = "block";
+});
 // 🔥 BURAYA EKLE
 function openModal(kasa){
   document.getElementById("modal").style.display = "flex";
@@ -776,7 +984,17 @@ window.onclick = function(e){
     closeModal();
   }
 }
+function showPanel(panel){
 
+  document.getElementById("kasaPanel").style.display = "none";
+  document.getElementById("homePanel").style.display = "none";
+
+  if(panel === "kasa"){
+    document.getElementById("kasaPanel").style.display = "block";
+    loadData();
+  }
+
+}
 </script>
 
 <div id="loading" class="loading">
