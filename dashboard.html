@@ -750,20 +750,14 @@ const buAyMi =
 
 }); 
 
-Object.keys(aylik).sort().forEach(ay => {
-
-  const [yil, ayNo] = ay.split("-");
-
-  const ayIsim = new Date(yil, ayNo-1).toLocaleDateString("tr-TR", {
-    month: "short",
-    year: "numeric"
-  });
+mainLabels = [];
+mainChartData = [];
 
 let runningTotal = 0;
 
 Object.keys(aylik).sort().forEach(ay => {
 
-  runningTotal += aylik[ay]; // 🔥 biriken bakiye
+  runningTotal += aylik[ay];
 
   const [yil, ayNo] = ay.split("-");
 
@@ -919,7 +913,9 @@ if(chartEl){
       }
     }
   });
-}function c(id, data){
+}
+
+function c(id, data){
 
   if(charts[id]){
     charts[id].destroy();
