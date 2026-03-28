@@ -976,9 +976,10 @@ reader.readAsArrayBuffer(file);
 });
 
 
-document.addEventListener("DOMContentLoaded", async () => {
-    await showPanel("kasa");
-});
+window.onload = async function(){
+  await showPanel("kasa");
+};
+
 // 🔥 BURAYA EKLE
 function openModal(kasa){
   document.getElementById("modal").style.display = "flex";
