@@ -568,6 +568,9 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 
 <script>
 
+let mainChartInstance = null;
+let charts = {};
+
 let hareketler = {
   kirsehir: [],
   aksaray: [],
@@ -811,28 +814,55 @@ if(k4) k4.innerText = formatMoney(bakiyeKasa.sorgun) + " ₺";
 const k5 = document.getElementById("bogazliyan");
 if(k5) k5.innerText = formatMoney(bakiyeKasa.bogazliyan) + " ₺";
 const chartEl = document.getElementById("mainChart");
+
+if (mainChartInstance) {
+  mainChartInstance.destroy();
+}
+
 if(chartEl){
-  new Chart(chartEl, {
-  type: "line",
-  data: {
-    labels: mainLabels,
-    datasets: [{
-      label: "Toplam",
-      data: mainChartData,
-      borderWidth: 2,
-      tension: 0.3,
-      pointRadius: 0
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        labels: {
-          color: "#e2e8f0"
+  mainChartInstance = new Chart(chartEl, {
+    type: "line",
+    data: {
+      labels: mainLabels,
+      datasets: [{
+        label: "Toplam",
+        data: mainChartData,
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: "#e2e8f0"
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: "#94a3b8",
+            maxTicksLimit: 6
+          },
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          ticks: {
+            color: "#94a3b8"
+          },
+          grid: {
+            color: "rgba(255,255,255,0.05)"
+          }
         }
       }
-    },
+    }
+  });
+}
     scales: {
       x: {
         ticks: {
