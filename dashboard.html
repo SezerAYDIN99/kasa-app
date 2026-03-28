@@ -330,14 +330,14 @@ th,td{
         <div class="menu" style="display:flex; gap:15px; margin-left:30px;">
 
             <a href="javascript:void(0)" onclick="showPanel('kasa')">Kasa</a>
-            <a href="pos.html">POS</a>
-            <a href="stok.html">Stok</a>
-            <a href="maliyet.html">Maliyet</a>
-            <a href="satis.html">Satış</a>
-            <a href="alis.html">Alış</a>
-            <a href="cari.html">Cari</a>
-            <a href="ceksenet.html">Çek/Senet</a>
-            <a href="karzarar.html">Kar/Zarar</a>
+            <a href="pos.html" class="menu-link">POS</a>
+            <a href="stok.html" class="menu-link">Stok</a>
+            <a href="maliyet.html" class="menu-link">Maliyet</a>
+            <a href="satis.html" class="menu-link">Satış</a>
+            <a href="alis.html" class="menu-link">Alış</a>
+            <a href="cari.html" class="menu-link">Cari</a>
+            <a href="ceksenet.html" class="menu-link">Çek/Senet</a>
+            <a href="karzarar.html" class="menu-link">Kar/Zarar</a>
 
         </div>
 
@@ -1055,6 +1055,24 @@ async function showPanel(panel){
   }
 
 }
+
+
+const aktifSayfalar = ["kasa"];
+
+document.querySelectorAll(".menu-link").forEach(link => {
+
+  link.addEventListener("click", function(e){
+
+    const sayfa = this.getAttribute("href").replace(".html","");
+
+    if(!aktifSayfalar.includes(sayfa)){
+      e.preventDefault(); // 🚫 sayfaya gitmesin
+      alert("Yetkiniz yoktur");
+    }
+
+  });
+
+});
 </script>
 
 <div id="loading" class="loading">
