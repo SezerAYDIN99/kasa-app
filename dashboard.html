@@ -867,11 +867,23 @@ if(chartEl){
     }
   });
 }
-function c(id,data){
-new Chart(document.getElementById(id),{
-type:"line",
-data:{labels:data.map((_,i)=>i),datasets:[{label:"Bakiye",data:data}]}
-});
+function c(id, data){
+
+  if(charts[id]){
+    charts[id].destroy();
+  }
+
+  charts[id] = new Chart(document.getElementById(id), {
+    type: "line",
+    data: {
+      labels: data.map((_, i) => i),
+      datasets: [{
+        label: "Bakiye",
+        data: data
+      }]
+    }
+  });
+
 }
 
 c("c1",kasa.kirsehir);
