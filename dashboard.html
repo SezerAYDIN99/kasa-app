@@ -164,6 +164,9 @@ th,td{
   margin: 30px auto;
 
 }
+.container{
+  min-height: 100vh;
+}
 
 #mainChart{
   height: 220px !important;
@@ -981,9 +984,17 @@ reader.readAsArrayBuffer(file);
 
 
 window.onload = async function(){
+
   document.getElementById("homePanel").style.display = "none";
   document.getElementById("kasaPanel").style.display = "block";
+
+  document.body.style.overflow = "auto";  
+  document.body.style.height = "auto";  
+
   await loadData();
+
+  window.scrollTo(0, 500); // EKLE
+
 };
 
 // 🔥 BURAYA EKLE
