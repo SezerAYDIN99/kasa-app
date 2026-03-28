@@ -208,9 +208,10 @@ th,td{
 
 .home-grid{
   display:grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 sabit kolon */
+  grid-template-columns: repeat(2, 1fr); /* 🔥 2 kolon */
+  justify-items: center;
   gap:30px;
-  max-width:1400px;
+  max-width:900px;
   margin:0 auto;
 }
 
@@ -356,18 +357,7 @@ th,td{
 
   <div class="home-grid">
 
-    <div class="home-card">
-      <h3>Vizyon</h3>
-      <p>Tüm finans süreçlerini tek merkezden yönetebilen güçlü bir sistem.</p>
-    </div>
-
-    <div class="home-card">
-      <h3>Misyon</h3>
-      <p>Finans verilerini sade ve kontrol edilebilir hale getirmek.</p>
-    </div>
-
-   
-<div class="home-card ceo">
+    <div class="home-card ceo">
   <h3>CEO Mesajı</h3>
   <p>
     1960 yılından bu yana köklü değerlerimiz ve güçlü vizyonumuz ile faaliyetlerimizi sürdürmekteyiz. 
@@ -384,7 +374,20 @@ th,td{
   <span style="opacity:0.6;">Yönetim Kurulu Başkanı</span>
 </div>
 
-  <div class="about">
+
+
+<div class="home-card">
+      <h3>Vizyon</h3>
+      <p>Tüm finans süreçlerini tek merkezden yönetebilen güçlü bir sistem.</p>
+    </div>
+
+    <div class="home-card">
+      <h3>Misyon</h3>
+      <p>Finans verilerini sade ve kontrol edilebilir hale getirmek.</p>
+    </div>
+
+</div>
+<div class="about">
   <h2>Hakkımızda</h2>
   <p>
     ÇAĞ Topluluğu, 1960 yılında temelleri atılmış köklü bir aile girişimi olarak, bugün başta otomotiv ve tarım olmak üzere farklı sektörlerde faaliyet gösteren, bölgesinde güçlü ve sürdürülebilir bir organizasyona dönüşmüştür. Kuruluşundan bu yana benimsediği uzun vadeli büyüme vizyonu, stratejik yatırım yaklaşımı ve bölgesel kalkınmaya katkı sağlama hedefi doğrultusunda hareket eden topluluk, istihdam yaratmayı ve ekonomik değer üretmeyi temel ilkeleri arasında konumlandırmaktadır.
@@ -395,8 +398,6 @@ Kurumsallaşma sürecinde hayata geçirilen organizasyonel dönüşüm ve yenide
 
 Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan ortaklığında faaliyetlerini sürdürmekte olup, güçlü kurumsal altyapısı, deneyimli insan kaynağı ve yenilikçi yönetim anlayışı ile sektöründe güvenilir, sürdürülebilir ve öncü bir marka olma vizyonunu kararlılıkla devam ettirmektedir.
   </p>
-</div>
-
 </div>
 <div id="kasaPanel" style="display:none;">
 <div class="container">
@@ -618,7 +619,7 @@ console.log("LOADDATA ÇALIŞTI");
 
 let query;
 
-if(user.email === "admin@test.com"){
+if(true){
   // 👑 ADMIN → HERKESİ GÖRÜR
   query = supabaseClient
     .from("kasa_verileri")
