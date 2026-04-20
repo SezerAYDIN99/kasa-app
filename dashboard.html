@@ -311,8 +311,6 @@ th,td{
 
 <body>
 
-<input type="file" id="excelInput" />
-<button onclick="excelYukle()">Yükle</button>
 
 <div class="navbar">
 
@@ -409,6 +407,19 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 <div id="kasaPanel" style="display:none;">
 <div class="container">
 
+<div class="card" style="margin-bottom:20px; display:flex; gap:10px; align-items:center;">
+  
+  <input type="date" id="startDate" style="padding:8px; border-radius:8px; border:none;">
+  
+  <input type="date" id="endDate" style="padding:8px; border-radius:8px; border:none;">
+  
+  <button onclick="loadData()" 
+    style="padding:8px 15px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer;">
+    Filtrele
+  </button>
+
+</div>
+
 <div class="grid">
 
 <div class="card">
@@ -417,13 +428,13 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 </div>
 
 <div class="card" onclick="openModal('kirsehir')">
-  <h4>Kırşehir</h4>
+  <h4>Kırşehir Hyundai</h4>
   <div id="kirsehir" class="big"></div>
   <canvas id="c1"></canvas>
 </div>
 
 <div class="card" onclick="openModal('aksaray')">
-  <h4>Aksaray</h4>
+  <h4>Aksaray Hyundai</h4>
   <div id="aksaray" class="big"></div>
   <canvas id="c2"></canvas>
 </div>
@@ -444,6 +455,18 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
   <h4>Boğazlıyan</h4>
   <div id="bogazliyan" class="big"></div>
   <canvas id="c5"></canvas>
+</div>
+
+<div class="card" onclick="openModal('kirsehir_case')">
+  <h4>Kırşehir Case</h4>
+  <div id="kirsehir_case" class="big"></div>
+  <canvas id="c6"></canvas>
+</div>
+
+<div class="card" onclick="openModal('aksaray_case')">
+  <h4>Aksaray Case</h4>
+  <div id="aksaray_case" class="big"></div>
+  <canvas id="c7"></canvas>
 </div>
 
 </div>
@@ -491,7 +514,7 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 <div class="grid">
 
 <div class="card">
-  <h4>Kırşehir</h4>
+  <h4>Kırşehir Hyundai</h4>
   <div id="kirsehir2" class="big"></div>
 
 <div class="detay">
@@ -506,7 +529,7 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 </div>
 
 <div class="card">
-  <h4>Aksaray</h4>
+  <h4>Aksaray Hyundai</h4>
   <div id="aksaray2" class="big"></div>
 
   <div class="detay">
@@ -583,7 +606,9 @@ let hareketler = {
   aksaray: [],
   nevsehir: [],
   sorgun: [],
-  bogazliyan: []
+  bogazliyan: [],
+  kirsehir_case: [],
+  aksaray_case: []
 };
 const supabaseClient = supabase.createClient(
 "https://ffzkszqwbnbemxifnsdf.supabase.co",
@@ -640,6 +665,16 @@ if(true){
     .select("*")
     .order("tarih", { ascending: true });
 
+const start = document.getElementById("startDate")?.value;
+const end = document.getElementById("endDate")?.value;
+
+if(start){
+  query = query.gte("tarih", start);
+}
+
+if(end){
+  query = query.lte("tarih", end);
+}
 }else{
   // 👤 NORMAL → SADECE KENDİSİ
   query = supabaseClient
@@ -660,8 +695,24 @@ if(error){
 
 let toplam=0;
 
-let kasa={kirsehir:[],aksaray:[],nevsehir:[],sorgun:[],bogazliyan:[]};
-let bakiyeKasa={kirsehir:0,aksaray:0,nevsehir:0,sorgun:0,bogazliyan:0};
+let kasa={
+  kirsehir:[],
+  aksaray:[],
+  nevsehir:[],
+  sorgun:[],
+  bogazliyan:[],
+  kirsehir_case:[],
+  aksaray_case:[]
+};
+let bakiyeKasa={
+  kirsehir:0,
+  aksaray:0,
+  nevsehir:0,
+  sorgun:0,
+  bogazliyan:0,
+  kirsehir_case:0,
+  aksaray_case:0
+};
 let fatG=0, fatC=0, frG=0, frC=0;
 
 let detay = {
@@ -704,8 +755,12 @@ const buAyMi =
     hareketler[name].push(r);
   }
 
-  if(ad.includes("kirsehir")) pushKasa("kirsehir");
-  else if(ad.includes("aksaray")) pushKasa("aksaray");
+  if(ad.includes("kirsehir") && ad.includes("hyundai")) pushKasa("kirsehir");
+  else if(ad.includes("aksaray") && ad.includes("hyundai")) pushKasa("aksaray");
+
+  else if(ad.includes("kirsehir") && ad.includes("case")) pushKasa("kirsehir_case");
+  else if(ad.includes("aksaray") && ad.includes("case")) pushKasa("aksaray_case");
+
   else if(ad.includes("nevsehir")) pushKasa("nevsehir");
   else if(ad.includes("sorgun")) pushKasa("sorgun");
   else if(ad.includes("bogazliyan")) pushKasa("bogazliyan");
@@ -819,8 +874,15 @@ if(el4) el4.innerText = formatMoney(frC) + " ₺";
 const k1 = document.getElementById("kirsehir");
 if(k1) k1.innerText = formatMoney(bakiyeKasa.kirsehir) + " ₺";
 
+const kc = document.getElementById("kirsehir_case");
+if(kc) kc.innerText = formatMoney(bakiyeKasa.kirsehir_case) + " ₺";
+
 const k2 = document.getElementById("aksaray");
 if(k2) k2.innerText = formatMoney(bakiyeKasa.aksaray) + " ₺";
+
+const ac = document.getElementById("aksaray_case");
+if(ac) ac.innerText = formatMoney(bakiyeKasa.aksaray_case) + " ₺";
+
 
 const k3 = document.getElementById("nevsehir");
 if(k3) k3.innerText = formatMoney(bakiyeKasa.nevsehir) + " ₺";
@@ -939,6 +1001,8 @@ c("c2",kasa.aksaray);
 c("c3",kasa.nevsehir);
 c("c4",kasa.sorgun);
 c("c5",kasa.bogazliyan);
+c("c6",kasa.kirsehir_case);
+c("c7",kasa.aksaray_case);
 
 }
 
