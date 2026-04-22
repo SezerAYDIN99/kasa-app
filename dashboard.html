@@ -311,7 +311,6 @@ th,td{
 
 <body>
 
-
 <div class="navbar">
 
     <div style="display:flex; align-items:center;">
@@ -328,6 +327,7 @@ th,td{
         <div class="menu" style="display:flex; gap:15px; margin-left:30px;">
 
             <a href="javascript:void(0)" onclick="showPanel('kasa')">Kasa</a>
+            <a href="javascript:void(0)" onclick="showPanel('nakit')">Nakit Akış</a>
             <a href="pos.html" class="menu-link">POS</a>
             <a href="stok.html" class="menu-link">Stok</a>
             <a href="maliyet.html" class="menu-link">Maliyet</a>
@@ -596,8 +596,119 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
     <button id="uploadBtn" class="excel-btn" onclick="document.getElementById('fileInput').click()">📤 Yükle</button>
 </div>
 
-<script>
+</div> <!-- container -->
+</div> <!-- kasaPanel tamamen kapandı -->
 
+<!-- 🔥 NAKİT PANEL -->
+
+<div id="nakitPanel" style="display:none;">
+  <div class="container">
+
+    <!-- 🔥 ÜST KARTLAR -->
+    <div class="grid">
+
+      <div class="card">
+        <h4>Toplam Banka Bakiyesi</h4>
+        <div class="big" id="toplamBakiye">0 ₺</div>
+      </div>
+
+      <div class="card">
+        <h4>Günlük Giriş</h4>
+        <div class="big" id="gunlukGiris">0 ₺</div>
+      </div>
+
+      <div class="card">
+        <h4>Günlük Çıkış</h4>
+        <div class="big" id="gunlukCikis">0 ₺</div>
+      </div>
+
+      <div class="card">
+        <h4>Gün Sonu Bakiye</h4>
+        <div class="big" id="gunSonu">0 ₺</div>
+      </div>
+
+    </div>
+
+    <!-- 🔥 BANKA TABLO -->
+    <div class="card" style="margin-top:20px;">
+      <h3>Banka Hesapları</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Banka</th>
+            <th>Devir</th>
+            <th>Giriş</th>
+            <th>Çıkış</th>
+            <th>Gün Sonu</th>
+          </tr>
+        </thead>
+        <tbody id="bankaTable"></tbody>
+      </table>
+    </div>
+
+    <!-- 🔥 ALT 2'Lİ -->
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; margin-top:20px;">
+
+      <!-- SOL -->
+      <div>
+
+        <div class="card">
+          <h3>Tahsilat Listesi</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Tarih</th>
+                <th>Açıklama</th>
+                <th>Tutar</th>
+              </tr>
+            </thead>
+            <tbody id="tahsilatTable"></tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <h3>Ödeme Listesi</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Tarih</th>
+                <th>Açıklama</th>
+                <th>Tutar</th>
+              </tr>
+            </thead>
+            <tbody id="odemeTable"></tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- SAĞ -->
+      <div>
+
+        <div class="card">
+          <h3>Toplam Sermaye</h3>
+          <div>TL: <span id="tlToplam">0</span></div>
+          <div>Fon: <span id="fonToplam">0</span></div>
+          <div>USD: <span id="usdToplam">0</span></div>
+          <div>Altın: <span id="altinToplam">0</span></div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <h3>Hızlı İşlemler</h3>
+          <button class="excel-btn" onclick="openIslem('tahsilat')">+ Tahsilat</button>
+          <button class="excel-btn" onclick="openIslem('odeme')">+ Ödeme</button>
+          <button class="excel-btn" onclick="openIslem('transfer')">+ Transfer</button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
 let mainChartInstance = null;
 let charts = {};
 
@@ -1141,26 +1252,115 @@ window.onclick = function(e){
 }
 async function showPanel(panel){
 
-  console.log("TIKLANDI:", panel); // test
-
   document.getElementById("kasaPanel").style.display = "none";
   document.getElementById("homePanel").style.display = "none";
+  document.getElementById("nakitPanel").style.display = "none";
 
   if(panel === "kasa"){
     document.getElementById("kasaPanel").style.display = "block";
     await loadData();
   }
 
+  if(panel === "nakit"){
+    document.getElementById("nakitPanel").style.display = "block";
+  }
+
   if(panel === "home"){
     document.getElementById("homePanel").style.display = "block";
   }
-
 }
 
+const aktifSayfalar = ["kasa","nakit"];
 
-const aktifSayfalar = ["kasa"];
+let aktifTip = "";
 
+function openIslem(tip){
+  aktifTip = tip;
+
+  document.getElementById("islemModal").style.display = "flex";
+  document.getElementById("islemTitle").innerText = tip.toUpperCase();
+}
+
+function closeIslem(){
+  document.getElementById("islemModal").style.display = "none";
+}
+async function kaydetIslem(){
+
+  const tarih = document.getElementById("islemTarih").value;
+  const gonderen = document.getElementById("gonderenBanka").value;
+const alan = document.getElementById("alanBanka").value;
+  const tutar = Number(document.getElementById("islemTutar").value);
+  const aciklama = document.getElementById("islemAciklama").value;
+
+  if(!tarih || !banka || !tutar){
+    alert("Boş alan bırakma");
+    return;
+  }
+
+  let veri = {
+    tarih: tarih,
+    kasa: banka,
+    aciklama: aciklama,
+    tahsilat: 0,
+    tediye: 0
+  };
+
+  if(aktifTip === "tahsilat"){
+    veri.tahsilat = tutar;
+  }
+
+  if(aktifTip === "odeme"){
+    veri.tediye = tutar;
+  }
+
+  if(aktifTip === "transfer"){
+
+  if(!gonderen || !alan){
+    alert("Banka seç");
+    return;
+  }
+
+  // ❌ gönderen bankadan çıkış
+  await supabaseClient.from("kasa_verileri").insert({
+    tarih,
+    kasa: gonderen,
+    aciklama: "Transfer -> " + alan + " | " + aciklama,
+    tahsilat: 0,
+    tediye: tutar
+  });
+
+  // ✅ alan bankaya giriş
+  await supabaseClient.from("kasa_verileri").insert({
+    tarih,
+    kasa: alan,
+    aciklama: gonderen + " -> Transfer | " + aciklama,
+    tahsilat: tutar,
+    tediye: 0
+  });
+
+  alert("Transfer başarılı");
+
+  closeIslem();
+  loadData();
+  return;
+}
+
+  const { error } = await supabaseClient
+    .from("kasa_verileri")
+    .insert(veri);
+
+  if(error){
+    alert("Hata: " + error.message);
+    return;
+  }
+
+  alert("Kayıt başarılı");
+
+  closeIslem();
+  loadData();
+}
 document.querySelectorAll(".menu-link").forEach(link => {
+
 
   link.addEventListener("click", function(e){
 
@@ -1198,5 +1398,38 @@ document.querySelectorAll(".menu-link").forEach(link => {
     </table>
   </div>
 </div>
+<div class="modal" id="islemModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeIslem()">×</span>
+
+    <h3 id="islemTitle">İşlem</h3>
+
+    <input type="date" id="islemTarih"><br><br>
+
+  <select id="gonderenBanka">
+  <option value="">Gönderen Banka</option>
+  <option>Ziraat</option>
+  <option>Halkbank</option>
+  <option>Vakıfbank</option>
+</select>
+
+<br><br>
+
+<select id="alanBanka">
+  <option value="">Alan Banka</option>
+  <option>Ziraat</option>
+  <option>Halkbank</option>
+  <option>Vakıfbank</option>
+</select>
+
+    <input type="number" id="islemTutar" placeholder="Tutar"><br><br>
+
+    <input type="text" id="islemAciklama" placeholder="Açıklama"><br><br>
+
+    <button onclick="kaydetIslem()">Kaydet</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="app.js"></script>
 </body>
 </html>
