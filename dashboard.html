@@ -305,6 +305,45 @@ th,td{
   opacity:0.6;
 }
 
+#bankaTable td{
+  padding:10px;
+  text-align:right;
+}
+
+#bankaTable td:first-child{
+  text-align:left;
+  font-weight:500;
+}
+
+table th{
+  text-align:right;
+}
+
+table th:first-child{
+  text-align:left;
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+}
+
+.card table{
+  font-size:13px;
+}
+
+#bankaTable tr:hover{
+  background: rgba(255,255,255,0.05);
+}
+
+#bankaTable td{
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.card h3{
+  margin-bottom:10px;
+}
+
 </style>
 
 </head>
@@ -406,6 +445,7 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 
 <div id="kasaPanel" style="display:none;">
 <div class="container">
+	
 
 <div class="card" style="margin-bottom:20px; display:flex; gap:10px; align-items:center;">
   
@@ -602,10 +642,11 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 <!-- 🔥 NAKİT PANEL -->
 
 <div id="nakitPanel" style="display:none;">
-  <div class="container">
+  <div style="display:grid; grid-template-columns: 3fr 1fr; gap:20px;">
 
     <!-- 🔥 ÜST KARTLAR -->
-    <div class="grid">
+<div>   
+ <div class="grid">
 
       <div class="card">
         <h4>Toplam Banka Bakiyesi</h4>
@@ -626,9 +667,8 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
         <h4>Gün Sonu Bakiye</h4>
         <div class="big" id="gunSonu">0 ₺</div>
       </div>
-
     </div>
-
+    
     <!-- 🔥 BANKA TABLO -->
     <div class="card" style="margin-top:20px;">
       <h3>Banka Hesapları</h3>
@@ -646,9 +686,11 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
         <tbody id="bankaTable"></tbody>
       </table>
     </div>
-
+</div>
     <!-- 🔥 ALT 2'Lİ -->
-    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; margin-top:20px;">
+
+
+</div>
 
       <!-- SOL -->
       <div>
@@ -687,12 +729,21 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
       <div>
 
         <div class="card">
-          <h3>Toplam Sermaye</h3>
-          <div>TL: <span id="tlToplam">0</span></div>
-          <div>Fon: <span id="fonToplam">0</span></div>
-          <div>USD: <span id="usdToplam">0</span></div>
-          <div>Altın: <span id="altinToplam">0</span></div>
-        </div>
+  <h3>Toplam Sermaye</h3>
+
+  <div>TL: <span id="tlToplam">0</span></div>
+  <div>Fon: <span id="fonToplam">0</span></div>
+  <div>USD: <span id="usdToplam">0</span></div>
+  <div>Altın: <span id="altinToplam">0</span></div>
+</div>
+
+<div class="card" style="margin-top:20px;">
+  <h3>Canlı Döviz</h3>
+
+  <div>USD: <span id="usdKur">-</span></div>
+  <div>EUR: <span id="eurKur">-</span></div>
+  <div>Altın: <span id="altinKur">-</span></div>
+</div>
 
         <div class="card" style="margin-top:20px;">
           <h3>Hızlı İşlemler</h3>
@@ -702,9 +753,6 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
         </div>
 
       </div>
-
-    </div>
-
   </div>
 </div>
 
@@ -1261,11 +1309,11 @@ async function showPanel(panel){
     await loadData();
   }
 
-  if(panel === "nakit"){
+if(panel === "nakit"){
   document.getElementById("nakitPanel").style.display = "block";
   loadNakit();
+  loadDoviz();
 }
-
   if(panel === "home"){
     document.getElementById("homePanel").style.display = "block";
   }
@@ -1289,7 +1337,9 @@ async function loadNakit(){
 
   const { data, error } = await supabaseClient
     .from("banka_hesaplari")
-    .select("*");
+.select("*")
+.order("banka", { ascending: true })
+.order("tur", { ascending: true });
 
   if(error){
     alert(error.message);
@@ -1298,6 +1348,8 @@ async function loadNakit(){
 
   let toplam = 0;
 
+let tl = 0, usd = 0, euro = 0, altin = 0;
+
   const table = document.getElementById("bankaTable");
   table.innerHTML = "";
 
@@ -1305,19 +1357,43 @@ async function loadNakit(){
 
     toplam += Number(r.bakiye || 0);
 
-    table.innerHTML += `
-      <tr>
-        <td>${r.banka} (${r.tur})</td>
-        <td>${r.bakiye}</td>
-        <td>-</td>
-        <td>-</td>
-        <td>${r.bakiye}</td>
-      </tr>
-    `;
-  });
+tl += Number(r.tl || 0);
+usd += Number(r.usd || 0);
+euro += Number(r.euro || 0);
+altin += Number(r.altin || 0);
 
-  document.getElementById("toplamBakiye").innerText =
-    toplam + " ₺";
+
+   table.innerHTML += `
+  <tr>
+    <td>${r.banka} (${r.tur})</td>
+    <td>${Number(r.bakiye).toFixed(2)}</td>
+    <td>-</td>
+    <td>-</td>
+    <td>${Number(r.bakiye).toFixed(2)}</td>
+  </tr>
+`;
+  });
+document.getElementById("toplamBakiye").innerText =
+  toplam.toFixed(2) + " ₺";
+document.getElementById("tlToplam").innerText = tl.toFixed(2);
+document.getElementById("usdToplam").innerText = usd.toFixed(2);
+document.getElementById("altinToplam").innerText = altin.toFixed(2);
+
+}
+async function loadDoviz(){
+
+  try{
+    const res = await fetch("https://api.exchangerate-api.com/v4/latest/TRY");
+    const data = await res.json();
+
+    document.getElementById("usdKur").innerText = (1 / data.rates.USD).toFixed(2);
+    document.getElementById("eurKur").innerText = (1 / data.rates.EUR).toFixed(2);
+
+    document.getElementById("altinKur").innerText = "≈ 2500";
+  }catch(e){
+    console.log(e);
+  }
+
 }
 
 async function kaydetIslem(){
