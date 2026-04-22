@@ -1395,10 +1395,19 @@ async function loadDoviz(){
       eurAlis + " / " + eurSatis;
 
     const altinUSD = 2300;
-    const gramAltin = (altinUSD * usd / 31.1);
+// 🟡 GERÇEK ALTIN (Gold API)
+const goldRes = await fetch("https://api.metals.live/v1/spot/gold");
+const goldData = await goldRes.json();
 
-    const altinAlis = (gramAltin * 0.998).toFixed(2);
-    const altinSatis = (gramAltin * 1.002).toFixed(2);
+// API ounce verir → gram çeviriyoruz
+const onsAltin = goldData[0].price;
+const gramAltin = (onsAltin * usd) / 31.1;
+
+const altinAlis = (gramAltin * 0.998).toFixed(2);
+const altinSatis = (gramAltin * 1.002).toFixed(2);
+
+document.getElementById("altinKur").innerText =
+  altinAlis + " / " + altinSatis;
 
     document.getElementById("altinKur").innerText =
       altinAlis + " / " + altinSatis;
