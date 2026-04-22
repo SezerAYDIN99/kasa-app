@@ -344,6 +344,14 @@ table{
   margin-bottom:10px;
 }
 
+.card h3 {
+  font-size:18px;
+}
+
+.card div {
+  margin-top:5px;
+}
+
 </style>
 
 </head>
@@ -642,117 +650,96 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 <!-- 🔥 NAKİT PANEL -->
 
 <div id="nakitPanel" style="display:none;">
+
   <div style="display:grid; grid-template-columns: 3fr 1fr; gap:20px;">
 
-    <!-- 🔥 ÜST KARTLAR -->
-<div>   
- <div class="grid">
+    <!-- SOL TARAF -->
+    <div>
 
-      <div class="card">
-        <h4>Toplam Banka Bakiyesi</h4>
-        <div class="big" id="toplamBakiye">0 ₺</div>
-      </div>
-
-      <div class="card">
-        <h4>Günlük Giriş</h4>
-        <div class="big" id="gunlukGiris">0 ₺</div>
-      </div>
-
-      <div class="card">
-        <h4>Günlük Çıkış</h4>
-        <div class="big" id="gunlukCikis">0 ₺</div>
-      </div>
-
-      <div class="card">
-        <h4>Gün Sonu Bakiye</h4>
-        <div class="big" id="gunSonu">0 ₺</div>
-      </div>
-    </div>
-    
-    <!-- 🔥 BANKA TABLO -->
-    <div class="card" style="margin-top:20px;">
-      <h3>Banka Hesapları</h3>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Banka</th>
-            <th>Devir</th>
-            <th>Giriş</th>
-            <th>Çıkış</th>
-            <th>Gün Sonu</th>
-          </tr>
-        </thead>
-        <tbody id="bankaTable"></tbody>
-      </table>
-    </div>
-</div>
-    <!-- 🔥 ALT 2'Lİ -->
-
-
-</div>
-
-      <!-- SOL -->
-      <div>
+      <!-- ÜST KARTLAR -->
+      <div class="grid">
+        <div class="card">
+          <h4>Toplam Banka Bakiyesi</h4>
+          <div class="big" id="toplamBakiye">0 ₺</div>
+        </div>
 
         <div class="card">
-          <h3>Tahsilat Listesi</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Tarih</th>
-                <th>Açıklama</th>
-                <th>Tutar</th>
-              </tr>
-            </thead>
-            <tbody id="tahsilatTable"></tbody>
-          </table>
+          <h4>Günlük Giriş</h4>
+          <div class="big" id="gunlukGiris">0 ₺</div>
         </div>
-
-        <div class="card" style="margin-top:20px;">
-          <h3>Ödeme Listesi</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Tarih</th>
-                <th>Açıklama</th>
-                <th>Tutar</th>
-              </tr>
-            </thead>
-            <tbody id="odemeTable"></tbody>
-          </table>
-        </div>
-
-      </div>
-
-      <!-- SAĞ -->
-      <div>
 
         <div class="card">
-  <h3>Toplam Sermaye</h3>
-
-  <div>TL: <span id="tlToplam">0</span></div>
-  <div>Fon: <span id="fonToplam">0</span></div>
-  <div>USD: <span id="usdToplam">0</span></div>
-  <div>Altın: <span id="altinToplam">0</span></div>
-</div>
-
-<div class="card" style="margin-top:20px;">
-  <h3>Canlı Döviz</h3>
-
-  <div>USD: <span id="usdKur">-</span></div>
-  <div>EUR: <span id="eurKur">-</span></div>
-  <div>Altın: <span id="altinKur">-</span></div>
-</div>
-
-        <div class="card" style="margin-top:20px;">
-          <h3>Hızlı İşlemler</h3>
-          <button class="excel-btn" onclick="openIslem('tahsilat')">+ Tahsilat</button>
-          <button class="excel-btn" onclick="openIslem('odeme')">+ Ödeme</button>
-          <button class="excel-btn" onclick="openIslem('transfer')">+ Transfer</button>
+          <h4>Günlük Çıkış</h4>
+          <div class="big" id="gunlukCikis">0 ₺</div>
         </div>
 
+        <div class="card">
+          <h4>Gün Sonu Bakiye</h4>
+          <div class="big" id="gunSonu">0 ₺</div>
+        </div>
       </div>
+
+      <!-- BANKA TABLO -->
+      <div class="card" style="margin-top:20px;">
+        <h3>Banka Hesapları</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Banka</th>
+              <th>Devir</th>
+              <th>Giriş</th>
+              <th>Çıkış</th>
+              <th>Gün Sonu</th>
+            </tr>
+          </thead>
+          <tbody id="bankaTable"></tbody>
+        </table>
+      </div>
+
+      <!-- ALT LİSTELER -->
+      <div class="card" style="margin-top:20px;">
+        <h3>Tahsilat Listesi</h3>
+        <table>
+          <tbody id="tahsilatTable"></tbody>
+        </table>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <h3>Ödeme Listesi</h3>
+        <table>
+          <tbody id="odemeTable"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- 🔥 SAĞ TARAF (EN ÖNEMLİ) -->
+    <div style="position:sticky; top:20px; height:fit-content;">
+
+      <div class="card">
+        <h3>Toplam Sermaye</h3>
+        <div>TL: <span id="tlToplam">0</span></div>
+        <div>Fon: <span id="fonToplam">0</span></div>
+        <div>USD: <span id="usdToplam">0</span></div>
+        <div>Altın: <span id="altinToplam">0</span></div>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <h3>Canlı Döviz</h3>
+        <div>USD: <span id="usdKur">-</span></div>
+        <div>EUR: <span id="eurKur">-</span></div>
+        <div>Altın: <span id="altinKur">-</span></div>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <h3>Hızlı İşlemler</h3>
+        <button class="excel-btn" onclick="openIslem('tahsilat')">+ Tahsilat</button>
+        <button class="excel-btn" onclick="openIslem('odeme')">+ Ödeme</button>
+        <button class="excel-btn" onclick="openIslem('transfer')">+ Transfer</button>
+      </div>
+
+    </div>
+
   </div>
 </div>
 
@@ -1383,19 +1370,40 @@ document.getElementById("altinToplam").innerText = altin.toFixed(2);
 async function loadDoviz(){
 
   try{
-    const res = await fetch("https://api.exchangerate-api.com/v4/latest/TRY");
+    const res = await fetch("https://api.exchangerate.host/latest?base=TRY");
     const data = await res.json();
 
-    document.getElementById("usdKur").innerText = (1 / data.rates.USD).toFixed(2);
-    document.getElementById("eurKur").innerText = (1 / data.rates.EUR).toFixed(2);
+    const usd = 1 / data.rates.USD;
+    const eur = 1 / data.rates.EUR;
 
-    document.getElementById("altinKur").innerText = "≈ 2500";
+    // 🔥 küçük spread ekliyoruz (alış/satış farkı)
+    const usdAlis = (usd * 0.998).toFixed(2);
+    const usdSatis = (usd * 1.002).toFixed(2);
+
+    const eurAlis = (eur * 0.998).toFixed(2);
+    const eurSatis = (eur * 1.002).toFixed(2);
+
+    document.getElementById("usdKur").innerText =
+      usdAlis + " / " + usdSatis;
+
+    document.getElementById("eurKur").innerText =
+      eurAlis + " / " + eurSatis;
+
+    // 🟡 ALTIN (USD üzerinden hesap)
+    const altinUSD = 2300; // ons yaklaşık
+    const gramAltin = (altinUSD * usd / 31.1);
+
+    const altinAlis = (gramAltin * 0.998).toFixed(2);
+    const altinSatis = (gramAltin * 1.002).toFixed(2);
+
+    document.getElementById("altinKur").innerText =
+      altinAlis + " / " + altinSatis;
+
   }catch(e){
-    console.log(e);
+    console.log("Döviz hata:", e);
   }
 
 }
-
 async function kaydetIslem(){
 
   const tarih = document.getElementById("islemTarih").value;
@@ -1527,7 +1535,6 @@ const alan = document.getElementById("alanBanka").value;
     <button onclick="kaydetIslem()">Kaydet</button>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script src="app.js"></script>
+
 </body>
 </html>
