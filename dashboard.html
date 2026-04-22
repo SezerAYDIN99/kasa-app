@@ -1394,23 +1394,31 @@ async function loadDoviz(){
     document.getElementById("eurKur").innerText =
       eurAlis + " / " + eurSatis;
 
-    const altinUSD = 2300;
+   
 // 🟡 GERÇEK ALTIN (Gold API)
-const goldRes = await fetch("https://api.metals.live/v1/spot/gold");
-const goldData = await goldRes.json();
+try {
+  const goldRes = await fetch("https://api.metals.live/v1/spot/gold");
+  const goldData = await goldRes.json();
 
-// API ounce verir → gram çeviriyoruz
-const onsAltin = goldData[0].price;
-const gramAltin = (onsAltin * usd) / 31.1;
+  if (!goldData || !goldData[0] || !goldData[0].price) {
+    throw "Altın veri yok";
+  }
 
-const altinAlis = (gramAltin * 0.998).toFixed(2);
-const altinSatis = (gramAltin * 1.002).toFixed(2);
+  const onsAltin = goldData[0].price;
+  const gramAltin = (onsAltin * usd) / 31.1;
 
-document.getElementById("altinKur").innerText =
-  altinAlis + " / " + altinSatis;
+  const altinAlis = (gramAltin * 0.998).toFixed(2);
+  const altinSatis = (gramAltin * 1.002).toFixed(2);
 
-    document.getElementById("altinKur").innerText =
-      altinAlis + " / " + altinSatis;
+  document.getElementById("altinKur").innerText =
+    altinAlis + " / " + altinSatis;
+
+} catch (e) {
+  console.log("Altın hata:", e);
+
+  document.getElementById("altinKur").innerText = "Veri yok";
+}
+
 
   }catch(e){
     console.log("Döviz hata:", e);
