@@ -1262,8 +1262,9 @@ async function showPanel(panel){
   }
 
   if(panel === "nakit"){
-    document.getElementById("nakitPanel").style.display = "block";
-  }
+  document.getElementById("nakitPanel").style.display = "block";
+  loadNakit();
+}
 
   if(panel === "home"){
     document.getElementById("homePanel").style.display = "block";
@@ -1284,6 +1285,41 @@ function openIslem(tip){
 function closeIslem(){
   document.getElementById("islemModal").style.display = "none";
 }
+async function loadNakit(){
+
+  const { data, error } = await supabaseClient
+    .from("banka_hesaplari")
+    .select("*");
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  let toplam = 0;
+
+  const table = document.getElementById("bankaTable");
+  table.innerHTML = "";
+
+  data.forEach(r => {
+
+    toplam += Number(r.bakiye || 0);
+
+    table.innerHTML += `
+      <tr>
+        <td>${r.banka} (${r.tur})</td>
+        <td>${r.bakiye}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>${r.bakiye}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("toplamBakiye").innerText =
+    toplam + " ₺";
+}
+
 async function kaydetIslem(){
 
   const tarih = document.getElementById("islemTarih").value;
@@ -1292,14 +1328,14 @@ const alan = document.getElementById("alanBanka").value;
   const tutar = Number(document.getElementById("islemTutar").value);
   const aciklama = document.getElementById("islemAciklama").value;
 
-  if(!tarih || !banka || !tutar){
+  if(!tarih || !tutar){
     alert("Boş alan bırakma");
     return;
   }
 
   let veri = {
     tarih: tarih,
-    kasa: banka,
+    kasa: gonderen || alan,
     aciklama: aciklama,
     tahsilat: 0,
     tediye: 0
@@ -1359,21 +1395,7 @@ const alan = document.getElementById("alanBanka").value;
   closeIslem();
   loadData();
 }
-document.querySelectorAll(".menu-link").forEach(link => {
 
-
-  link.addEventListener("click", function(e){
-
-    const sayfa = this.getAttribute("href").replace(".html","");
-
-    if(!aktifSayfalar.includes(sayfa)){
-      e.preventDefault(); // 🚫 sayfaya gitmesin
-      alert("Yetkiniz yoktur");
-    }
-
-  });
-
-});
 </script>
 
 <div id="loading" class="loading">
