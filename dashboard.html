@@ -697,20 +697,9 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
       </div>
 
       <!-- ALT LİSTELER -->
-      <div class="card" style="margin-top:20px;">
-        <h3>Tahsilat Listesi</h3>
-        <table>
-          <tbody id="tahsilatTable"></tbody>
-        </table>
-      </div>
+      
 
-      <div class="card" style="margin-top:20px;">
-        <h3>Ödeme Listesi</h3>
-        <table>
-          <tbody id="odemeTable"></tbody>
-        </table>
-      </div>
-
+    
     </div>
 
     <!-- 🔥 SAĞ TARAF (EN ÖNEMLİ) -->
@@ -737,6 +726,23 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
         <button class="excel-btn" onclick="openIslem('odeme')">+ Ödeme</button>
         <button class="excel-btn" onclick="openIslem('transfer')">+ Transfer</button>
       </div>
+<div class="card" style="margin-top:20px;">
+  <h3>Tahsilatlar</h3>
+  <div style="max-height:200px; overflow:auto;">
+    <table>
+      <tbody id="tahsilatTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card" style="margin-top:20px;">
+  <h3>Ödemeler</h3>
+  <div style="max-height:200px; overflow:auto;">
+    <table>
+      <tbody id="odemeTable"></tbody>
+    </table>
+  </div>
+</div>
 
     </div>
 
@@ -1368,15 +1374,14 @@ document.getElementById("altinToplam").innerText = altin.toFixed(2);
 
 }
 async function loadDoviz(){
-
   try{
-    const res = await fetch("https://api.exchangerate.host/latest?base=TRY");
+
+    const res = await fetch("https://open.er-api.com/v6/latest/TRY");
     const data = await res.json();
 
     const usd = 1 / data.rates.USD;
     const eur = 1 / data.rates.EUR;
 
-    // 🔥 küçük spread ekliyoruz (alış/satış farkı)
     const usdAlis = (usd * 0.998).toFixed(2);
     const usdSatis = (usd * 1.002).toFixed(2);
 
@@ -1389,8 +1394,7 @@ async function loadDoviz(){
     document.getElementById("eurKur").innerText =
       eurAlis + " / " + eurSatis;
 
-    // 🟡 ALTIN (USD üzerinden hesap)
-    const altinUSD = 2300; // ons yaklaşık
+    const altinUSD = 2300;
     const gramAltin = (altinUSD * usd / 31.1);
 
     const altinAlis = (gramAltin * 0.998).toFixed(2);
@@ -1402,7 +1406,6 @@ async function loadDoviz(){
   }catch(e){
     console.log("Döviz hata:", e);
   }
-
 }
 async function kaydetIslem(){
 
