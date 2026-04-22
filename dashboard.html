@@ -1397,14 +1397,14 @@ async function loadDoviz(){
    
 // 🟡 GERÇEK ALTIN (Gold API)
 try {
-  const goldRes = await fetch("https://api.exchangerate.host/latest?base=XAU&symbols=TRY");
-  const goldData = await goldRes.json();
+  const res = await fetch("https://api.exchangerate.host/latest?base=XAU&symbols=TRY");
+  const data = await res.json();
 
-  if (!goldData || !goldData.rates || !goldData.rates.TRY) {
+  if (!data || !data.rates || !data.rates.TRY) {
     throw new Error("Altın veri yok");
   }
 
-  const gramAltin = goldData.rates.TRY / 31.1;
+  const gramAltin = data.rates.TRY / 31.1;
 
   const altinAlis = (gramAltin * 0.998).toFixed(2);
   const altinSatis = (gramAltin * 1.002).toFixed(2);
@@ -1416,7 +1416,6 @@ try {
   console.log("Altın hata:", e);
   document.getElementById("altinKur").innerText = "Veri yok";
 }
-
   }catch(e){
     console.log("Döviz hata:", e);
   }
