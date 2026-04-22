@@ -48,6 +48,42 @@ async function baslat() {
 }
 
 baslat();
+async function loadNakit(){
+
+  const { data, error } = await supabase
+    .from("banka_ozet")
+    .select("*");
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  const table = document.getElementById("bankaTable");
+  table.innerHTML = "";
+
+  let toplam = 0;
+
+  data.forEach(r => {
+
+    toplam += Number(r.toplam || 0);
+
+    table.innerHTML += `
+      <tr>
+        <td>${r.banka}</td>
+        <td>${Number(r.tl).toFixed(2)}</td>
+        <td>${Number(r.usd).toFixed(2)}</td>
+        <td>${Number(r.euro).toFixed(2)}</td>
+        <td>${Number(r.altin).toFixed(2)}</td>
+        <td>${Number(r.toplam).toFixed(2)}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("toplamBakiye").innerText =
+    toplam.toFixed(2) + " ₺";
+}
+
 
 async function girisYap() {
   const email = document.getElementById("email").value;
@@ -68,13 +104,13 @@ async function girisYap() {
 }
 
 async function sayfaAc(sayfa) {
-  const izin = await yetkiKontrol(sayfa);
 
+  const izin = await yetkiKontrol(sayfa);
   if (!izin) return;
 
-  // BURASI SENİN MEVCUT SİSTEMİN
-  console.log(sayfa + " açıldı");
+  if(sayfa === "nakit"){
+    loadNakit();
+  }
 
-  // örnek:
-  // document.getElementById("icerik").innerHTML = ...
+  console.log(sayfa + " açıldı");
 }
