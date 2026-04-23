@@ -1394,9 +1394,14 @@ table.innerHTML += `
 document.getElementById("toplamBakiye").innerText =
   toplam.toFixed(2) + " ₺";
 document.getElementById("tlToplam").innerText = tl.toFixed(2);
-document.getElementById("usdToplam").innerText = usd.toFixed(2);
-document.getElementById("altinToplam").innerText = altin.toFixed(2);
+document.getElementById("usdToplam").innerText =
+  usd.toFixed(2) + " ($) ≈ " + (usd * usdKurAlis).toFixed(2) + " ₺";
 
+document.getElementById("altinToplam").innerText =
+  altin.toFixed(2) + " (gr) ≈ " + (altin * altinKurAlis).toFixed(2) + " ₺";
+
+document.getElementById("fonToplam").innerText =
+  euro.toFixed(2) + " (€) ≈ " + (euro * eurKurAlis).toFixed(2) + " ₺";
 }
 async function loadDoviz(){
   try{
@@ -1584,3 +1589,4 @@ const alan = document.getElementById("alanBanka").value;
 
 </body>
 </html>
+	
