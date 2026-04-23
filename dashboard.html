@@ -1359,10 +1359,26 @@ let tl = 0, usd = 0, euro = 0, altin = 0;
 
 data.forEach(r => {
 
-const tlVal = Number(r.tl || 0);
-const usdVal = Number(r.usd || 0);
-const euroVal = Number(r.euro || 0);
-const altinVal = Number(r.altin || 0);
+let tlVal = Number(r.tl || 0);
+let usdVal = Number(r.usd || 0);
+let euroVal = Number(r.euro || 0);
+let altinVal = Number(r.altin || 0);
+
+// 🔥 AKILLI AYIRIM
+if(r.tur?.toLowerCase().includes("euro")){
+  euroVal = tlVal;
+  tlVal = 0;
+}
+
+if(r.tur?.toLowerCase().includes("usd")){
+  usdVal = tlVal;
+  tlVal = 0;
+}
+
+if(r.tur?.toLowerCase().includes("altin")){
+  altinVal = tlVal;
+  tlVal = 0;
+}
 
 toplam +=
   tlVal +
@@ -1589,4 +1605,3 @@ const alan = document.getElementById("alanBanka").value;
 
 </body>
 </html>
-	
