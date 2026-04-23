@@ -724,6 +724,8 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
         <h3>Toplam Sermaye</h3>
         <div>TL: <span id="tlToplam">0</span></div>
         <div>Fon: <span id="fonToplam">0</span></div>
+	<div>POS: <span id="posToplam">0</span></div>
+        <div>Vadeli: <span id="vadeliToplam">0</span></div>
         <div>USD: <span id="usdToplam">0</span></div>
         <div>EURO: <span id="euroToplam">0</span></div>
         <div>Altın: <span id="altinToplam">0</span></div>
@@ -1383,6 +1385,8 @@ const kullanilacakAltin = getKur("altinKur", 0);
 
 let toplam = 0;
 let tlMevduat = 0, fon = 0, usd = 0, euro = 0, altin = 0;
+let pos = 0;
+let vadeli = 0;
 
 data.forEach(r => {
 
@@ -1392,6 +1396,21 @@ let euroVal = Number(r.euro || 0);
 let altinVal = Number(r.altin || 0);
 
 const tur = (r.tur || "").toLowerCase();
+
+if(tur.includes("fon")){
+  fon += tlVal;
+  tlVal = 0;
+}
+
+if(tur.includes("pos")){
+  pos += tlVal;
+  tlVal = 0;
+}
+
+if(tur.includes("vadeli")){
+  vadeli += tlVal;
+  tlVal = 0;
+}
 
 // ALTIN
 if(tur.includes("altin")){
@@ -1474,6 +1493,11 @@ document.getElementById("altinToplam").innerText =
 
 document.getElementById("fonToplam").innerText =
   fon.toFixed(2) + " ₺";
+document.getElementById("posToplam").innerText =
+  pos.toFixed(2) + " ₺";
+
+document.getElementById("vadeliToplam").innerText =
+  vadeli.toFixed(2) + " ₺";
 }
 
 async function loadDoviz(tarih = null){
