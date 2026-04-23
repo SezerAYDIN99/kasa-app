@@ -1457,7 +1457,6 @@ table.innerHTML += `
 
 const genelToplam =
   tlMevduat +
-  fon +
   (usd * kullanilacakUsd) +
   (euro * kullanilacakEur) +
   (altin * kullanilacakAltin);
@@ -1483,9 +1482,15 @@ async function loadDoviz(tarih = null){
     let url;
 
     if(tarih){
-      console.log("Tarih seçildi:", tarih);
-      url = "https://open.er-api.com/v6/latest/TRY";
+      // 📅 SEÇİLEN TARİHİN KURU
+      const t = new Date(tarih);
+      const yil = t.getFullYear();
+      const ay = String(t.getMonth()+1).padStart(2,'0');
+      const gun = String(t.getDate()).padStart(2,'0');
+
+      url = `https://open.er-api.com/v6/${yil}-${ay}-${gun}`;
     }else{
+      // 🔴 CANLI
       url = "https://open.er-api.com/v6/latest/TRY";
     }
 
@@ -1507,27 +1512,17 @@ async function loadDoviz(tarih = null){
     document.getElementById("eurKur").innerText =
       eurAlis + " / " + eurSatis;
 
-    // 🟡 ALTIN (ARTIK DOĞRU YERDE)
-    try {
-      const goldRes = await fetch("https://api.gold-api.com/price/XAU");
-      const goldData = await goldRes.json();
+    // 🟡 ALTIN
+    const goldRes = await fetch("https://api.gold-api.com/price/XAU");
+    const goldData = await goldRes.json();
 
-      if (!goldData || !goldData.price) {
-        throw new Error("Altın veri yok");
-      }
+    const gramAltin = (goldData.price * usd) / 31.1;
 
-      const gramAltin = (goldData.price * usd) / 31.1;
+    const altinAlis = (gramAltin * 0.998).toFixed(2);
+    const altinSatis = (gramAltin * 1.002).toFixed(2);
 
-      const altinAlis = (gramAltin * 0.998).toFixed(2);
-      const altinSatis = (gramAltin * 1.002).toFixed(2);
-
-      document.getElementById("altinKur").innerText =
-        altinAlis + " / " + altinSatis;
-
-    } catch (e) {
-      console.log("Altın hata:", e);
-      document.getElementById("altinKur").innerText = "Veri yok";
-    }
+    document.getElementById("altinKur").innerText =
+      altinAlis + " / " + altinSatis;
 
   }catch(e){
     console.log("Döviz hata:", e);
@@ -1668,4 +1663,3 @@ const alan = document.getElementById("alanBanka").value;
 
 </body>
 </html>
-	
