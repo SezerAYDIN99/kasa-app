@@ -1497,8 +1497,18 @@ async function loadDoviz(tarih = null){
     const res = await fetch(url);
     const data = await res.json();
 
-    const usd = data.rates.USD;
-    const eur = data.rates.EUR;
+    let usd, eur;
+
+// 📅 tarihli ise (frankfurter → ters)
+if(tarih){
+  usd = 1 / data.rates.USD;
+  eur = 1 / data.rates.EUR;
+}
+// 🔴 canlı ise (zaten doğru)
+else{
+  usd = data.rates.USD;
+  eur = data.rates.EUR;
+}
 
     const usdAlis = (usd * 0.998).toFixed(2);
     const usdSatis = (usd * 1.002).toFixed(2);
@@ -1663,4 +1673,3 @@ const alan = document.getElementById("alanBanka").value;
 
 </body>
 </html>
-	
