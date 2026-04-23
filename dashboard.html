@@ -1355,7 +1355,7 @@ const eurKurAlis = getKur("eurKur", 0);
 const altinKurAlis = getKur("altinKur", 0);
 
 let toplam = 0;
-let tl = 0, usd = 0, euro = 0, altin = 0;
+let tlMevduat = 0, fon = 0, usd = 0, euro = 0, altin = 0;
 
 data.forEach(r => {
 
@@ -1364,20 +1364,35 @@ let usdVal = Number(r.usd || 0);
 let euroVal = Number(r.euro || 0);
 let altinVal = Number(r.altin || 0);
 
-// 🔥 AKILLI AYIRIM
-if(r.tur?.toLowerCase().includes("euro")){
-  euroVal = tlVal;
+const tur = (r.tur || "").toLowerCase();
+
+// ALTIN
+if(tur.includes("altin")){
+  altinVal = Number(r.tl || 0);
   tlVal = 0;
 }
 
-if(r.tur?.toLowerCase().includes("usd")){
-  usdVal = tlVal;
+// EURO
+else if(tur.includes("euro")){
+  euroVal = Number(r.tl || 0);
   tlVal = 0;
 }
 
-if(r.tur?.toLowerCase().includes("altin")){
-  altinVal = tlVal;
+// USD
+else if(tur.includes("usd")){
+  usdVal = Number(r.tl || 0);
   tlVal = 0;
+}
+
+// FON (TL AMA AYRI)
+else if(tur.includes("fon")){
+  fon += Number(r.tl || 0);
+  tlVal = 0;
+}
+
+// NORMAL TL
+else {
+  tlMevduat += tlVal;
 }
 
 toplam +=
@@ -1409,7 +1424,8 @@ table.innerHTML += `
 
 document.getElementById("toplamBakiye").innerText =
   toplam.toFixed(2) + " ₺";
-document.getElementById("tlToplam").innerText = tl.toFixed(2);
+document.getElementById("tlToplam").innerText =
+  tlMevduat.toFixed(2);
 document.getElementById("usdToplam").innerText =
   usd.toFixed(2) + " ($) ≈ " + (usd * usdKurAlis).toFixed(2) + " ₺";
 
@@ -1417,7 +1433,7 @@ document.getElementById("altinToplam").innerText =
   altin.toFixed(2) + " (gr) ≈ " + (altin * altinKurAlis).toFixed(2) + " ₺";
 
 document.getElementById("fonToplam").innerText =
-  euro.toFixed(2) + " (€) ≈ " + (euro * eurKurAlis).toFixed(2) + " ₺";
+  fon.toFixed(2) + " ₺";
 }
 async function loadDoviz(){
   try{
