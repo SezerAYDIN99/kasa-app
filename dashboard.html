@@ -1380,9 +1380,6 @@ const kullanilacakEur = getKur("eurKur", 0);
 const kullanilacakAltin = getKur("altinKur", 0);
 
 
-if(bitis){
-  console.log("Tarih seçildi, burada eski kur kullanılacak");
-}
 
 let toplam = 0;
 let tlMevduat = 0, fon = 0, usd = 0, euro = 0, altin = 0;
@@ -1536,7 +1533,7 @@ async function loadDoviz(tarih = null){
     console.log("Döviz hata:", e);
   }
 }
-}
+
 async function kaydetIslem(){
 
   const tarih = document.getElementById("islemTarih").value;
@@ -1671,3 +1668,4 @@ const alan = document.getElementById("alanBanka").value;
 
 </body>
 </html>
+	
