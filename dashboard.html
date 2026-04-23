@@ -651,10 +651,19 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 
 <div id="nakitPanel" style="display:none;">
 
-<div style="margin-bottom:15px;">
-  <input type="date" id="baslangicTarih">
-  <input type="date" id="bitisTarih">
-  <button onclick="loadNakit()">Filtrele</button>
+<div class="card" style="margin-bottom:20px; display:flex; gap:10px; align-items:center;">
+
+  <input type="date" id="baslangicTarih"
+    style="padding:8px; border-radius:8px; border:none;">
+
+  <input type="date" id="bitisTarih"
+    style="padding:8px; border-radius:8px; border:none;">
+
+  <button onclick="loadNakit()"
+    style="padding:8px 15px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer;">
+    Filtrele
+  </button>
+
 </div>
 
   <div style="display:grid; grid-template-columns: 3fr 1fr; gap:20px;">
@@ -1311,7 +1320,8 @@ async function showPanel(panel){
 
 if(panel === "nakit"){
   document.getElementById("nakitPanel").style.display = "block";
- await loadDoviz();
+ const bitis = document.getElementById("bitisTarih")?.value || null;
+await loadDoviz(bitis);
  await loadNakit();
 }
   if(panel === "home"){
@@ -1336,9 +1346,12 @@ function closeIslem(){
 async function loadNakit(){
 
 const baslangic = document.getElementById("baslangicTarih")?.value;
-const bitis = document.getElementById("bitisTarih")?.value;
+const bitis2 = document.getElementById("bitisTarih")?.value;
 
-console.log("Seçilen tarih:", baslangic, bitis);
+// 🔥 dövizleri buna göre yükle
+await loadDoviz(bitis2);
+
+console.log("Seçilen tarih:", baslangic, bitis2);
 
   const { data, error } = await supabaseClient
     .from("banka_hesaplari")
@@ -1466,10 +1479,20 @@ document.getElementById("altinToplam").innerText =
 document.getElementById("fonToplam").innerText =
   fon.toFixed(2) + " ₺";
 }
-async function loadDoviz(){
+
+async function loadDoviz(tarih = null){
   try{
 
-    const res = await fetch("https://open.er-api.com/v6/latest/TRY");
+    let url;
+
+    if(tarih){
+      console.log("Tarih seçildi:", tarih);
+      url = "https://open.er-api.com/v6/latest/TRY";
+    }else{
+      url = "https://open.er-api.com/v6/latest/TRY";
+    }
+
+    const res = await fetch(url);
     const data = await res.json();
 
     const usd = 1 / data.rates.USD;
@@ -1487,36 +1510,32 @@ async function loadDoviz(){
     document.getElementById("eurKur").innerText =
       eurAlis + " / " + eurSatis;
 
-   
-// 🟡 GERÇEK ALTIN (Gold API)
-try {
-  // USD zaten sende var
-  const usdKur = usd;
+    // 🟡 ALTIN (ARTIK DOĞRU YERDE)
+    try {
+      const goldRes = await fetch("https://api.gold-api.com/price/XAU");
+      const goldData = await goldRes.json();
 
-  // 🟡 ALTIN (başka API)
-  const res = await fetch("https://api.gold-api.com/price/XAU");
-  const data = await res.json();
+      if (!goldData || !goldData.price) {
+        throw new Error("Altın veri yok");
+      }
 
-  if (!data || !data.price) {
-    throw new Error("Altın veri yok");
-  }
+      const gramAltin = (goldData.price * usd) / 31.1;
 
-  // ons → gram
-  const gramAltin = (data.price * usdKur) / 31.1;
+      const altinAlis = (gramAltin * 0.998).toFixed(2);
+      const altinSatis = (gramAltin * 1.002).toFixed(2);
 
-  const altinAlis = (gramAltin * 0.998).toFixed(2);
-  const altinSatis = (gramAltin * 1.002).toFixed(2);
+      document.getElementById("altinKur").innerText =
+        altinAlis + " / " + altinSatis;
 
-  document.getElementById("altinKur").innerText =
-    altinAlis + " / " + altinSatis;
+    } catch (e) {
+      console.log("Altın hata:", e);
+      document.getElementById("altinKur").innerText = "Veri yok";
+    }
 
-} catch (e) {
-  console.log("Altın hata:", e);
-  document.getElementById("altinKur").innerText = "Veri yok";
-}
   }catch(e){
     console.log("Döviz hata:", e);
   }
+}
 }
 async function kaydetIslem(){
 
