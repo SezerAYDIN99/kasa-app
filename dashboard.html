@@ -651,6 +651,12 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
 
 <div id="nakitPanel" style="display:none;">
 
+<div style="margin-bottom:15px;">
+  <input type="date" id="baslangicTarih">
+  <input type="date" id="bitisTarih">
+  <button onclick="loadNakit()">Filtrele</button>
+</div>
+
   <div style="display:grid; grid-template-columns: 3fr 1fr; gap:20px;">
 
     <!-- SOL TARAF -->
@@ -1329,6 +1335,11 @@ function closeIslem(){
 }
 async function loadNakit(){
 
+const baslangic = document.getElementById("baslangicTarih")?.value;
+const bitis = document.getElementById("bitisTarih")?.value;
+
+console.log("Seçilen tarih:", baslangic, bitis);
+
   const { data, error } = await supabaseClient
     .from("banka_hesaplari")
 .select("*")
@@ -1351,9 +1362,14 @@ const getKur = (id, index) => {
   return parseFloat(val) || 0;
 };
 
-const usdKurAlis = getKur("usdKur", 0);
-const eurKurAlis = getKur("eurKur", 0);
-const altinKurAlis = getKur("altinKur", 0);
+const kullanilacakUsd = getKur("usdKur", 0);
+const kullanilacakEur = getKur("eurKur", 0);
+const kullanilacakAltin = getKur("altinKur", 0);
+
+
+if(bitis){
+  console.log("Tarih seçildi, burada eski kur kullanılacak");
+}
 
 let toplam = 0;
 let tlMevduat = 0, fon = 0, usd = 0, euro = 0, altin = 0;
@@ -1398,9 +1414,9 @@ else {
 
 toplam +=
   tlVal +
-  (usdVal * usdKurAlis) +
-  (euroVal * eurKurAlis) +
-  (altinVal * altinKurAlis);
+  (usdVal * kullanilacakUsd) +
+  (euroVal * kullanilacakEur) +
+  (altinVal * kullanilacakAltin);
   
 usd += usdVal;
   euro += euroVal;
@@ -1432,20 +1448,20 @@ table.innerHTML += `
 const genelToplam =
   tlMevduat +
   fon +
-  (usd * usdKurAlis) +
-  (euro * eurKurAlis) +
-  (altin * altinKurAlis);
+  (usd * kullanilacakUsd) +
+  (euro * kullanilacakEur) +
+  (altin * kullanilacakAltin);
 
 document.getElementById("toplamBakiye").innerText =
   genelToplam.toFixed(2) + " ₺";
 document.getElementById("tlToplam").innerText =
   tlMevduat.toFixed(2);
 document.getElementById("usdToplam").innerText =
-  usd.toFixed(2) + " ($) ≈ " + (usd * usdKurAlis).toFixed(2) + " ₺";
+  usd.toFixed(2) + " ($) ≈ " + (usd * kullanilacakUsd).toFixed(2) + " ₺";
 document.getElementById("euroToplam").innerText =
-  euro.toFixed(2) + " (€) ≈ " + (euro * eurKurAlis).toFixed(2) + " ₺";
+  euro.toFixed(2) + " (€) ≈ " + (euro * kullanilacakEur).toFixed(2) + " ₺";
 document.getElementById("altinToplam").innerText =
-  altin.toFixed(2) + " (gr) ≈ " + (altin * altinKurAlis).toFixed(2) + " ₺";
+  altin.toFixed(2) + " (gr) ≈ " + (altin * kullanilacakAltin).toFixed(2) + " ₺";
 
 document.getElementById("fonToplam").innerText =
   fon.toFixed(2) + " ₺";
@@ -1636,4 +1652,3 @@ const alan = document.getElementById("alanBanka").value;
 
 </body>
 </html>
-	
