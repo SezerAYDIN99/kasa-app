@@ -795,7 +795,10 @@ async function logout(){
 }
 
 function formatMoney(val){
-  return Number(val || 0).toFixed(2);
+  return Number(val || 0).toLocaleString("tr-TR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 function normalize(text){
@@ -1414,7 +1417,7 @@ if(tur.includes("vadeli")){
 
 // ALTIN
 if(tur.includes("altin")){
-  altinVal = Number(r.bakiye)|| 0);
+  altinVal = Number(r.bakiye)|| 0;
   tlVal = 0;
 }
 
