@@ -1488,7 +1488,7 @@ async function loadDoviz(tarih = null){
       const ay = String(t.getMonth()+1).padStart(2,'0');
       const gun = String(t.getDate()).padStart(2,'0');
 
-      url = `https://open.er-api.com/v6/${yil}-${ay}-${gun}`;
+      url = `https://api.frankfurter.app/${yil}-${ay}-${gun}?from=TRY&to=USD,EUR`;
     }else{
       // 🔴 CANLI
       url = "https://open.er-api.com/v6/latest/TRY";
@@ -1497,8 +1497,8 @@ async function loadDoviz(tarih = null){
     const res = await fetch(url);
     const data = await res.json();
 
-    const usd = 1 / data.rates.USD;
-    const eur = 1 / data.rates.EUR;
+    const usd = data.rates.USD;
+    const eur = data.rates.EUR;
 
     const usdAlis = (usd * 0.998).toFixed(2);
     const usdSatis = (usd * 1.002).toFixed(2);
@@ -1663,3 +1663,4 @@ const alan = document.getElementById("alanBanka").value;
 
 </body>
 </html>
+	
