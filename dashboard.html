@@ -1304,8 +1304,8 @@ async function showPanel(panel){
 
 if(panel === "nakit"){
   document.getElementById("nakitPanel").style.display = "block";
-  loadNakit();
-  loadDoviz();
+ await loadDoviz();
+ await loadNakit();
 }
   if(panel === "home"){
     document.getElementById("homePanel").style.display = "block";
@@ -1339,33 +1339,58 @@ async function loadNakit(){
     return;
   }
 
-  let toplam = 0;
 
-let tl = 0, usd = 0, euro = 0, altin = 0;
 
   const table = document.getElementById("bankaTable");
   table.innerHTML = "";
 
-  data.forEach(r => {
+const getKur = (id, index) => {
+  const text = document.getElementById(id)?.innerText || "0/0";
+  const val = text.split("/")[index];
+  return parseFloat(val) || 0;
+};
 
-    toplam += Number(r.bakiye || 0);
+const usdKurAlis = getKur("usdKur", 0);
+const eurKurAlis = getKur("eurKur", 0);
+const altinKurAlis = getKur("altinKur", 0);
 
-tl += Number(r.tl || 0);
-usd += Number(r.usd || 0);
-euro += Number(r.euro || 0);
-altin += Number(r.altin || 0);
+let toplam = 0;
+let tl = 0, usd = 0, euro = 0, altin = 0;
 
+data.forEach(r => {
 
-   table.innerHTML += `
+  const tlVal = Number(r.tl || 0);
+  const usdVal = Number(r.usd || 0);
+  const euroVal = Number(r.euro || 0);
+  const altinVal = Number(r.altin || 0);
+
+  toplam +=
+    tlVal +
+    (usdVal * usdKurAlis) +
+    (euroVal * eurKurAlis) +
+    (altinVal * altinKurAlis);
+
+  tl += tlVal;
+  usd += usdVal;
+  euro += euroVal;
+  altin += altinVal;
+
+table.innerHTML += `
   <tr>
     <td>${r.banka} (${r.tur})</td>
-    <td>${Number(r.bakiye).toFixed(2)}</td>
+    <td>${tlVal.toFixed(2)}</td>
     <td>-</td>
     <td>-</td>
-    <td>${Number(r.bakiye).toFixed(2)}</td>
+    <td>${(
+      tlVal +
+      (usdVal * usdKurAlis) +
+      (euroVal * eurKurAlis) +
+      (altinVal * altinKurAlis)
+    ).toFixed(2)}</td>
   </tr>
 `;
-  });
+});
+
 document.getElementById("toplamBakiye").innerText =
   toplam.toFixed(2) + " ₺";
 document.getElementById("tlToplam").innerText = tl.toFixed(2);
