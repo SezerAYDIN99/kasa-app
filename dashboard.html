@@ -1390,7 +1390,7 @@ let vadeli = 0;
 
 data.forEach(r => {
 
-let tlVal = Number(r.tl || 0);
+let tlVal = Number(r.bakiye || 0);
 let usdVal = Number(r.usd || 0);
 let euroVal = Number(r.euro || 0);
 let altinVal = Number(r.altin || 0);
@@ -1414,25 +1414,25 @@ if(tur.includes("vadeli")){
 
 // ALTIN
 if(tur.includes("altin")){
-  altinVal = Number(r.tl || 0);
+  altinVal = Number(r.bakiye)|| 0);
   tlVal = 0;
 }
 
 // EURO
 else if(tur.includes("euro")){
-  euroVal = Number(r.tl || 0);
+  euroVal = Number(r.bakiye) || 0);
   tlVal = 0;
 }
 
 // USD
 else if(tur.includes("usd")){
-  usdVal = Number(r.tl || 0);
+  usdVal = Number(r.bakiye) || 0);
   tlVal = 0;
 }
 
 // FON (TL AMA AYRI)
 else if(tur.includes("fon")){
-  fon += Number(r.tl || 0);
+  fon += Number(r.bakiye) || 0);
   tlVal = 0;
 }
 
