@@ -710,6 +710,7 @@ Bugün ÇAĞ TAŞIT; Ferhat Çağlayan, Ali Çağlayan ve Alkım Çağlayan orta
         <div>TL: <span id="tlToplam">0</span></div>
         <div>Fon: <span id="fonToplam">0</span></div>
         <div>USD: <span id="usdToplam">0</span></div>
+        <div>EURO: <span id="euroToplam">0</span></div>
         <div>Altın: <span id="altinToplam">0</span></div>
       </div>
 
@@ -1436,7 +1437,8 @@ document.getElementById("tlToplam").innerText =
   tlMevduat.toFixed(2);
 document.getElementById("usdToplam").innerText =
   usd.toFixed(2) + " ($) ≈ " + (usd * usdKurAlis).toFixed(2) + " ₺";
-
+document.getElementById("euroToplam").innerText =
+  euro.toFixed(2) + " (€) ≈ " + (euro * eurKurAlis).toFixed(2) + " ₺";
 document.getElementById("altinToplam").innerText =
   altin.toFixed(2) + " (gr) ≈ " + (altin * altinKurAlis).toFixed(2) + " ₺";
 
