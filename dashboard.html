@@ -1411,7 +1411,12 @@ usd += usdVal;
 table.innerHTML += `
   <tr>
     <td>${r.banka} (${r.tur})</td>
-    <td>${tlVal.toFixed(2)}</td>
+    <td>${
+  altinVal > 0 ? altinVal.toFixed(2) + " gr" :
+  euroVal > 0 ? euroVal.toFixed(2) + " €" :
+  usdVal > 0 ? usdVal.toFixed(2) + " $" :
+  tlVal.toFixed(2) + " ₺"
+}</td>
     <td>-</td>
     <td>-</td>
     <td>${(
