@@ -1419,12 +1419,12 @@ table.innerHTML += `
 }</td>
     <td>-</td>
     <td>-</td>
-    <td>${(
-      tlVal +
-      (usdVal * usdKurAlis) +
-      (euroVal * eurKurAlis) +
-      (altinVal * altinKurAlis)
-    ).toFixed(2)}</td>
+  <td>${
+  altinVal > 0 ? altinVal.toFixed(2) + " gr" :
+  euroVal > 0 ? euroVal.toFixed(2) + " €" :
+  usdVal > 0 ? usdVal.toFixed(2) + " $" :
+  tlVal.toFixed(2) + " ₺"
+}</td>
   </tr>
 `;
 });
@@ -1636,3 +1636,4 @@ const alan = document.getElementById("alanBanka").value;
 
 </body>
 </html>
+	
