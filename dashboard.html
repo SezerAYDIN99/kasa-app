@@ -1479,42 +1479,40 @@ document.getElementById("fonToplam").innerText =
 async function loadDoviz(tarih = null){
   try{
 
-    let url;
+    let usdKur = 0;
+    let eurKur = 0;
 
     if(tarih){
-      // 📅 SEÇİLEN TARİHİN KURU
+
       const t = new Date(tarih);
       const yil = t.getFullYear();
       const ay = String(t.getMonth()+1).padStart(2,'0');
       const gun = String(t.getDate()).padStart(2,'0');
 
-      url = `https://api.frankfurter.app/${yil}-${ay}-${gun}?from=TRY&to=USD,EUR`;
+      // ✅ TARİHLİ (DOĞRU GELİR → ÇEVİRME YOK)
+      const usdRes = await fetch(`https://api.frankfurter.app/${yil}-${ay}-${gun}?from=USD&to=TRY`);
+      const usdData = await usdRes.json();
+      usdKur = usdData.rates.TRY;
+
+      const eurRes = await fetch(`https://api.frankfurter.app/${yil}-${ay}-${gun}?from=EUR&to=TRY`);
+      const eurData = await eurRes.json();
+      eurKur = eurData.rates.TRY;
+
     }else{
-      // 🔴 CANLI
-      url = "https://open.er-api.com/v6/latest/TRY";
+
+      // 🔴 CANLI (TERS GELİR → ÇEVİR!)
+      const res = await fetch("https://open.er-api.com/v6/latest/TRY");
+      const data = await res.json();
+
+      usdKur = 1 / data.rates.USD;   // 🔥 BURASI KRİTİK
+      eurKur = 1 / data.rates.EUR;
     }
 
-    const res = await fetch(url);
-    const data = await res.json();
+    const usdAlis = (usdKur * 0.998).toFixed(2);
+    const usdSatis = (usdKur * 1.002).toFixed(2);
 
-    let usd, eur;
-
-// 📅 tarihli ise (frankfurter → ters)
-if(tarih){
-  usd = 1 / data.rates.USD;
-  eur = 1 / data.rates.EUR;
-}
-// 🔴 canlı ise (zaten doğru)
-else{
-  usd = data.rates.USD;
-  eur = data.rates.EUR;
-}
-
-    const usdAlis = (usd * 0.998).toFixed(2);
-    const usdSatis = (usd * 1.002).toFixed(2);
-
-    const eurAlis = (eur * 0.998).toFixed(2);
-    const eurSatis = (eur * 1.002).toFixed(2);
+    const eurAlis = (eurKur * 0.998).toFixed(2);
+    const eurSatis = (eurKur * 1.002).toFixed(2);
 
     document.getElementById("usdKur").innerText =
       usdAlis + " / " + usdSatis;
@@ -1526,7 +1524,7 @@ else{
     const goldRes = await fetch("https://api.gold-api.com/price/XAU");
     const goldData = await goldRes.json();
 
-    const gramAltin = (goldData.price * usd) / 31.1;
+    const gramAltin = (goldData.price * usdKur) / 31.1;
 
     const altinAlis = (gramAltin * 0.998).toFixed(2);
     const altinSatis = (gramAltin * 1.002).toFixed(2);
@@ -1538,7 +1536,6 @@ else{
     console.log("Döviz hata:", e);
   }
 }
-
 async function kaydetIslem(){
 
   const tarih = document.getElementById("islemTarih").value;
