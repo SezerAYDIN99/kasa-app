@@ -1617,67 +1617,56 @@ const alan = document.getElementById("alanBanka").value;
     return;
   }
 
-  let veri = {
-    tarih: tarih,
-    kasa: gonderen || alan,
-    aciklama: aciklama,
-    tahsilat: 0,
-    tediye: 0
-  };
 
-  if(aktifTip === "tahsilat"){
-    veri.tahsilat = tutar;
-  }
+let banka = "";
 
-  if(aktifTip === "odeme"){
-    veri.tediye = tutar;
-  }
+if(aktifTip === "tahsilat"){
+  banka = alan;
+}
 
-  if(aktifTip === "transfer"){
-
-  if(!gonderen || !alan){
-    alert("Banka seç");
-    return;
-  }
-
-  // ❌ gönderen bankadan çıkış
-  await supabaseClient.from("kasa_verileri").insert({
-    tarih,
-    kasa: gonderen,
-    aciklama: "Transfer -> " + alan + " | " + aciklama,
-    tahsilat: 0,
-    tediye: tutar
-  });
-
-  // ✅ alan bankaya giriş
-  await supabaseClient.from("kasa_verileri").insert({
-    tarih,
-    kasa: alan,
-    aciklama: gonderen + " -> Transfer | " + aciklama,
-    tahsilat: tutar,
-    tediye: 0
-  });
-
-  alert("Transfer başarılı");
-
-  closeIslem();
-  loadData();
+if(aktifTip === "odeme"){
+  banka = gonderen;
+}
+if(!banka){
+  alert("Banka seç");
   return;
 }
 
-  const { error } = await supabaseClient
-    .from("kasa_verileri")
-    .insert(veri);
+let tur = "TL"; // şimdilik sabit (sonra dropdown yaparız)
 
-  if(error){
-    alert("Hata: " + error.message);
-    return;
-  }
+let giris = 0;
+let cikis = 0;
 
-  alert("Kayıt başarılı");
+if(aktifTip === "tahsilat"){
+  giris = tutar;
+}
 
-  closeIslem();
-  loadData();
+if(aktifTip === "odeme"){
+  cikis = tutar;
+}
+
+// 🔥 TEK KAYIT
+const { error } = await supabaseClient
+  .from("banka_hareketleri")
+  .insert({
+    tarih: tarih,
+    banka: banka,
+    tur: tur,
+    giris: giris,
+    cikis: cikis,
+    aciklama: aciklama
+  });
+
+if(error){
+  alert("Hata: " + error.message);
+  return;
+}
+
+alert("Kayıt başarılı");
+
+// 🔥 EN KRİTİK
+closeIslem();
+await loadNakit();
 }
 
 async function bankaDetay(banka, tur){
