@@ -1402,7 +1402,7 @@ let hesaplar = {};
 // 1. TÜM HAREKETLERİ TOPLA
 data.forEach(r => {
 
-  const key = r.kasa + "_TL";
+  const key = r.kasa;
 
   if(!hesaplar[key]){
     hesaplar[key] = 0;
@@ -1416,7 +1416,8 @@ data.forEach(r => {
 // 2. HESAPLARI İŞLE
 Object.keys(hesaplar).forEach(key => {
 
-  const [banka, tur] = key.split("_");
+const banka = key;
+const tur = "TL";
   const bakiye = hesaplar[key];
 
   const turLower = tur.toLowerCase();
