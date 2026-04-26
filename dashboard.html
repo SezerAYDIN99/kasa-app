@@ -1632,7 +1632,7 @@ if(!banka){
   return;
 }
 
-let tur = "TL"; // şimdilik sabit (sonra dropdown yaparız)
+let tur = document.getElementById("islemTur").value; // şimdilik sabit (sonra dropdown yaparız)
 
 let giris = 0;
 let cikis = 0;
@@ -1750,21 +1750,56 @@ function closeBankaModal(){
 
   <select id="gonderenBanka">
   <option value="">Gönderen Banka</option>
-  <option>Ziraat</option>
-  <option>Halkbank</option>
-  <option>Vakıfbank</option>
+
+  <option>AKBANK</option>
+  <option>DENIZBANK</option>
+  <option>GARANTIBANK</option>
+  <option>HALKBANK</option>
+  <option>ISBANK</option>
+  <option>QNB</option>
+  <option>SEKERBANK</option>
+  <option>TURKIYE FINANS</option>
+  <option>VAKIFBANK</option>
+  <option>YAPIKREDI</option>
+  <option>ZIRAATBANK</option>
 </select>
 
 <br><br>
 
 <select id="alanBanka">
   <option value="">Alan Banka</option>
-  <option>Ziraat</option>
-  <option>Halkbank</option>
-  <option>Vakıfbank</option>
+
+  <option>AKBANK</option>
+  <option>DENIZBANK</option>
+  <option>GARANTIBANK</option>
+  <option>HALKBANK</option>
+  <option>ISBANK</option>
+  <option>QNB</option>
+  <option>SEKERBANK</option>
+  <option>TURKIYE FINANS</option>
+  <option>VAKIFBANK</option>
+  <option>YAPIKREDI</option>
+  <option>ZIRAATBANK</option>
 </select>
 
     <input type="number" id="islemTutar" placeholder="Tutar"><br><br>
+
+    <input type="number" id="islemTutar" placeholder="Tutar"><br><br>
+
+<!-- 🔥 BURAYA EKLE -->
+<select id="islemTur">
+  <option value="TL">TL</option>
+  <option value="USD">USD</option>
+  <option value="EURO">EURO</option>
+  <option value="ALTIN">ALTIN</option>
+  <option value="FON">FON</option>
+  <option value="POS">POS</option>
+  <option value="VADELI">VADELİ</option>
+</select>
+<br><br>
+<!-- 🔥 BURAYA EKLE -->
+
+<input type="text" id="islemAciklama" placeholder="Açıklama"><br><br>
 
     <input type="text" id="islemAciklama" placeholder="Açıklama"><br><br>
 
