@@ -1391,39 +1391,58 @@ let tlMevduat = 0, fon = 0, usd = 0, euro = 0, altin = 0;
 let pos = 0;
 let vadeli = 0;
 
+let hesaplar = {};
+
+// 1. TÜM HAREKETLERİ TOPLA
 data.forEach(r => {
 
-  const tur = (r.tur || "").toLowerCase();
-  const bakiye = Number(r.bakiye || 0);
+  const key = r.banka + "_" + r.tur;
+
+  if(!hesaplar[key]){
+    hesaplar[key] = 0;
+  }
+
+  hesaplar[key] += Number(r.giris || 0);
+  hesaplar[key] -= Number(r.cikis || 0);
+
+});
+
+// 2. HESAPLARI İŞLE
+Object.keys(hesaplar).forEach(key => {
+
+  const [banka, tur] = key.split("_");
+  const bakiye = hesaplar[key];
+
+  const turLower = tur.toLowerCase();
 
   let tlKarsiligi = 0;
 
-  if(tur.includes("usd")){
+  if(turLower.includes("usd")){
     tlKarsiligi = bakiye * kullanilacakUsd;
     usd += bakiye;
   }
 
-  else if(tur.includes("euro")){
+  else if(turLower.includes("euro")){
     tlKarsiligi = bakiye * kullanilacakEur;
     euro += bakiye;
   }
 
-  else if(tur.includes("altin")){
+  else if(turLower.includes("altin")){
     tlKarsiligi = bakiye * kullanilacakAltin;
     altin += bakiye;
   }
 
-  else if(tur.includes("fon")){
+  else if(turLower.includes("fon")){
     fon += bakiye;
     tlKarsiligi = bakiye;
   }
 
-  else if(tur.includes("pos")){
+  else if(turLower.includes("pos")){
     pos += bakiye;
     tlKarsiligi = bakiye;
   }
 
-  else if(tur.includes("vadeli")){
+  else if(turLower.includes("vadeli")){
     vadeli += bakiye;
     tlKarsiligi = bakiye;
   }
@@ -1437,7 +1456,7 @@ data.forEach(r => {
 
   table.innerHTML += `
     <tr>
-      <td>${r.banka} (${r.tur})</td>
+      <td>${banka} (${tur})</td>
       <td>${bakiye.toFixed(2)}</td>
       <td>-</td>
       <td>-</td>
@@ -1446,6 +1465,7 @@ data.forEach(r => {
   `;
 
 });
+
 const genelToplam = toplam;
 
 document.getElementById("toplamBakiye").innerText =
