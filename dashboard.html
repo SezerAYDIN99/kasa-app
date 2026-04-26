@@ -1352,9 +1352,10 @@ async function loadNakit(){
 
 const baslangic = document.getElementById("baslangicTarih")?.value;
 const bitis2 = document.getElementById("bitisTarih")?.value;
+const seciliTarih = bitis2 && bitis2 !== "" ? bitis2 : null;
 
 // 🔥 dövizleri buna göre yükle
-await loadDoviz(bitis2);
+await loadDoviz(seciliTarih);
 
 console.log("Seçilen tarih:", baslangic, bitis2);
 
@@ -1374,15 +1375,14 @@ console.log("Seçilen tarih:", baslangic, bitis2);
   const table = document.getElementById("bankaTable");
   table.innerHTML = "";
 
-const getKur = (id, index) => {
-  const text = document.getElementById(id)?.innerText || "0/0";
-  const val = text.split("/")[index]?.trim();
-  return parseFloat(val) || 0;
+const getKur = (id) => {
+  const val = document.getElementById(id)?.innerText;
+  return Number(val) || 0;
 };
 
-const kullanilacakUsd = getKur("usdKur", 0);
-const kullanilacakEur = getKur("eurKur", 0);
-const kullanilacakAltin = getKur("altinKur", 0);
+const kullanilacakUsd = getKur("usdKur");
+const kullanilacakEur = getKur("eurKur");
+const kullanilacakAltin = getKur("altinKur");
 
 
 
@@ -1393,106 +1393,80 @@ let vadeli = 0;
 
 data.forEach(r => {
 
-let tlVal = Number(r.bakiye || 0);
-let usdVal = Number(r.usd || 0);
-let euroVal = Number(r.euro || 0);
-let altinVal = Number(r.altin || 0);
+  const tur = (r.tur || "").toLowerCase();
+  const bakiye = Number(r.bakiye || 0);
 
-const tur = (r.tur || "").toLowerCase();
+  let tlKarsiligi = 0;
 
-if(tur.includes("fon")){
-  fon += tlVal;
-  tlVal = 0;
-}
+  if(tur.includes("usd")){
+    tlKarsiligi = bakiye * kullanilacakUsd;
+    usd += bakiye;
+  }
 
-if(tur.includes("pos")){
-  pos += tlVal;
-  tlVal = 0;
-}
+  else if(tur.includes("euro")){
+    tlKarsiligi = bakiye * kullanilacakEur;
+    euro += bakiye;
+  }
 
-if(tur.includes("vadeli")){
-  vadeli += tlVal;
-  tlVal = 0;
-}
+  else if(tur.includes("altin")){
+    tlKarsiligi = bakiye * kullanilacakAltin;
+    altin += bakiye;
+  }
 
-// ALTIN
-if(tur.includes("altin")){
-  altinVal = Number(r.bakiye)|| 0;
-  tlVal = 0;
-}
+  else if(tur.includes("fon")){
+    fon += bakiye;
+    tlKarsiligi = bakiye;
+  }
 
-// EURO
-else if(tur.includes("euro")){
-  euroVal = Number(r.bakiye) || 0;
-  tlVal = 0;
-}
+  else if(tur.includes("pos")){
+    pos += bakiye;
+    tlKarsiligi = bakiye;
+  }
 
-// USD
-else if(tur.includes("usd")){
-  usdVal = Number(r.bakiye) || 0;
-  tlVal = 0;
-}
+  else if(tur.includes("vadeli")){
+    vadeli += bakiye;
+    tlKarsiligi = bakiye;
+  }
 
-// FON (TL AMA AYRI)
-else if(tur.includes("fon")){
-  fon += Number(r.bakiye) || 0;
-  tlVal = 0;
-}
+  else {
+    tlMevduat += bakiye;
+    tlKarsiligi = bakiye;
+  }
 
-// NORMAL TL
-else {
-  tlMevduat += tlVal;
-}
+  toplam += tlKarsiligi;
 
-toplam +=
-  tlVal +
-  (usdVal * kullanilacakUsd) +
-  (euroVal * kullanilacakEur) +
-  (altinVal * kullanilacakAltin);
-  
-usd += usdVal;
-  euro += euroVal;
-  altin += altinVal;
+  table.innerHTML += `
+    <tr>
+      <td>${r.banka} (${r.tur})</td>
+      <td>${bakiye.toFixed(2)}</td>
+      <td>-</td>
+      <td>-</td>
+      <td>${bakiye.toFixed(2)}</td>
+    </tr>
+  `;
 
-
-
-table.innerHTML += `
-  <tr>
-    <td>${r.banka} (${r.tur})</td>
-    <td>${
-  altinVal > 0 ? altinVal.toFixed(2) + " gr" :
-  euroVal > 0 ? euroVal.toFixed(2) + " €" :
-  usdVal > 0 ? usdVal.toFixed(2) + " $" :
-  tlVal.toFixed(2) + " ₺"
-}</td>
-    <td>-</td>
-    <td>-</td>
-  <td>${
-  altinVal > 0 ? altinVal.toFixed(2) + " gr" :
-  euroVal > 0 ? euroVal.toFixed(2) + " €" :
-  usdVal > 0 ? usdVal.toFixed(2) + " $" :
-  tlVal.toFixed(2) + " ₺"
-}</td>
-  </tr>
-`;
 });
-
-const genelToplam =
-  tlMevduat +
-  (usd * kullanilacakUsd) +
-  (euro * kullanilacakEur) +
-  (altin * kullanilacakAltin);
+const genelToplam = toplam;
 
 document.getElementById("toplamBakiye").innerText =
   genelToplam.toFixed(2) + " ₺";
 document.getElementById("tlToplam").innerText =
-  tlMevduat.toFixed(2);
+  (tlMevduat).toFixed(2);
 document.getElementById("usdToplam").innerText =
   usd.toFixed(2) + " ($) ≈ " + (usd * kullanilacakUsd).toFixed(2) + " ₺";
 document.getElementById("euroToplam").innerText =
   euro.toFixed(2) + " (€) ≈ " + (euro * kullanilacakEur).toFixed(2) + " ₺";
 document.getElementById("altinToplam").innerText =
   altin.toFixed(2) + " (gr) ≈ " + (altin * kullanilacakAltin).toFixed(2) + " ₺";
+
+console.log("TOPLAM TL:", toplam);
+console.log("TL:", tlMevduat);
+console.log("USD TL:", usd * kullanilacakUsd);
+console.log("EURO TL:", euro * kullanilacakEur);
+console.log("ALTIN TL:", altin * kullanilacakAltin);
+console.log("FON:", fon);
+console.log("POS:", pos);
+console.log("VADELİ:", vadeli);
 
 document.getElementById("fonToplam").innerText =
   fon.toFixed(2) + " ₺";
@@ -1509,6 +1483,12 @@ async function loadDoviz(tarih = null){
     let usdKur = 0;
     let eurKur = 0;
 
+
+    if(!tarih){
+  console.log("CANLI KUR KULLANILIYOR");
+}else{
+  console.log("TARİHLİ KUR:", tarih);
+}
     if(tarih){
 
       const t = new Date(tarih);
@@ -1542,10 +1522,10 @@ async function loadDoviz(tarih = null){
     const eurSatis = (eurKur * 1.002).toFixed(2);
 
     document.getElementById("usdKur").innerText =
-      usdAlis + " / " + usdSatis;
+  usdKur.toFixed(2);
 
     document.getElementById("eurKur").innerText =
-      eurAlis + " / " + eurSatis;
+  eurKur.toFixed(2);
 
     // 🟡 ALTIN
     const goldRes = await fetch("https://api.gold-api.com/price/XAU");
@@ -1557,7 +1537,7 @@ async function loadDoviz(tarih = null){
     const altinSatis = (gramAltin * 1.002).toFixed(2);
 
     document.getElementById("altinKur").innerText =
-      altinAlis + " / " + altinSatis;
+  gramAltin.toFixed(2);
 
   }catch(e){
     console.log("Döviz hata:", e);
