@@ -1654,10 +1654,10 @@ if(aktifTip === "transfer"){
     return;
   }
 
-  if(gonderen === alan){
-    alert("Aynı banka olmaz");
-    return;
-  }
+ if(gonderen === alan && gonderenTur === alanTur){
+  alert("Aynı hesaplar arasında transfer olmaz");
+  return;
+}
 
 // 1️⃣ çıkış
 const { data: data1, error: error1 } = await supabaseClient
