@@ -1368,7 +1368,9 @@ console.log("Seçilen tarih:", baslangic, bitis2);
   .select("*")
   .order("tarih", { ascending: true });
 
-if(seciliTarih){
+if(!seciliTarih){
+  console.log("TARİH YOK → TÜM VERİ");
+}else{
   query = query.lte("tarih", seciliTarih);
 }
 
