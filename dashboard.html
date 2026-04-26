@@ -1632,7 +1632,9 @@ if(aktifTip !== "transfer" && !banka){
   return;
 }
 
-let tur = document.getElementById("islemTur").value; // şimdilik sabit (sonra dropdown yaparız)
+const gonderenTur = document.getElementById("gonderenTur").value;
+const alanTur = document.getElementById("alanTur").value;
+ // şimdilik sabit (sonra dropdown yaparız)
 
 let giris = 0;
 let cikis = 0;
@@ -1663,7 +1665,7 @@ const { data: data1, error: error1 } = await supabaseClient
   .insert({
     tarih,
     banka: gonderen,
-    tur,
+    tur: gonderenTur,
     giris: 0,
     cikis: tutar,
     aciklama: "Transfer -> " + alan + " | " + aciklama
@@ -1684,7 +1686,7 @@ const { data: data2, error: error2 } = await supabaseClient
   .insert({
     tarih,
     banka: alan,
-    tur,
+    tur: alanTur,
     giris: tutar,
     cikis: 0,
     aciklama: gonderen + " -> Transfer | " + aciklama
@@ -1712,7 +1714,7 @@ const { error } = await supabaseClient
   .insert({
     tarih: tarih,
     banka: banka,
-    tur: tur,
+    tur: gonderenTur,
     giris: giris,
     cikis: cikis,
     aciklama: aciklama
@@ -1846,7 +1848,8 @@ function closeBankaModal(){
     <input type="number" id="islemTutar" placeholder="Tutar"><br><br>
 
 <!-- 🔥 BURAYA EKLE -->
-<select id="islemTur">
+Gönderen Hesap:
+<select id="gonderenTur">
   <option value="TL">TL</option>
   <option value="USD">USD</option>
   <option value="EURO">EURO</option>
@@ -1855,6 +1858,20 @@ function closeBankaModal(){
   <option value="POS">POS</option>
   <option value="VADELI">VADELİ</option>
 </select>
+
+<br><br>
+
+Alan Hesap:
+<select id="alanTur">
+  <option value="TL">TL</option>
+  <option value="USD">USD</option>
+  <option value="EURO">EURO</option>
+  <option value="ALTIN">ALTIN</option>
+  <option value="FON">FON</option>
+  <option value="POS">POS</option>
+  <option value="VADELI">VADELİ</option>
+</select>
+
 <br><br>
 <!-- 🔥 BURAYA EKLE -->
 
@@ -1887,4 +1904,3 @@ function closeBankaModal(){
 
 </body>
 </html>
-		
