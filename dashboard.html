@@ -1359,16 +1359,16 @@ await loadDoviz(seciliTarih);
 
 console.log("Seçilen tarih:", baslangic, bitis2);
 
-  const { data, error } = await supabaseClient
-    .from("banka_hesaplari")
-.select("*")
-.order("banka", { ascending: true })
-.order("tur", { ascending: true });
+ let query = supabaseClient
+  .from("banka_hareketleri")
+  .select("*")
+  .order("tarih", { ascending: true });
 
-  if(error){
-    alert(error.message);
-    return;
-  }
+if(seciliTarih){
+  query = query.lte("tarih", seciliTarih);
+}
+
+const { data, error } = await query;
 
 
 
@@ -1697,3 +1697,4 @@ const alan = document.getElementById("alanBanka").value;
 
 </body>
 </html>
+	
