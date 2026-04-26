@@ -1363,8 +1363,8 @@ await loadDoviz(seciliTarih);
 
 console.log("Seçilen tarih:", baslangic, bitis2);
 
- let query = supabaseClient
-  .from("kasa_verileri")
+let query = supabaseClient
+  .from("banka_hareketleri")
   .select("*")
   .order("tarih", { ascending: true });
 
@@ -1400,56 +1400,56 @@ let vadeli = 0;
 let hesaplar = {};
 
 // 1. TÜM HAREKETLERİ TOPLA
+let hesaplar = {};
+
 data.forEach(r => {
 
-  const key = r.kasa;
+  const key = r.banka + "_" + r.tur;
 
   if(!hesaplar[key]){
     hesaplar[key] = 0;
   }
 
-  hesaplar[key] += Number(r.tahsilat || 0);
-  hesaplar[key] -= Number(r.tediye || 0);
+  const giris = Number(r.giris || 0);
+  const cikis = Number(r.cikis || 0);
+
+  hesaplar[key] += giris - cikis;
 
 });
 
-// 2. HESAPLARI İŞLE
 Object.keys(hesaplar).forEach(key => {
 
-const banka = key;
-const tur = "TL";
+  const [banka, tur] = key.split("_");
   const bakiye = hesaplar[key];
-
-  const turLower = tur.toLowerCase();
 
   let tlKarsiligi = 0;
 
-  if(turLower.includes("usd")){
+  if(tur.toLowerCase().includes("usd")){
     tlKarsiligi = bakiye * kullanilacakUsd;
     usd += bakiye;
   }
 
-  else if(turLower.includes("euro")){
+  else if(tur.toLowerCase().includes("euro")){
     tlKarsiligi = bakiye * kullanilacakEur;
     euro += bakiye;
   }
 
-  else if(turLower.includes("altin")){
+  else if(tur.toLowerCase().includes("altin")){
     tlKarsiligi = bakiye * kullanilacakAltin;
     altin += bakiye;
   }
 
-  else if(turLower.includes("fon")){
+  else if(tur.toLowerCase().includes("fon")){
     fon += bakiye;
     tlKarsiligi = bakiye;
   }
 
-  else if(turLower.includes("pos")){
+  else if(tur.toLowerCase().includes("pos")){
     pos += bakiye;
     tlKarsiligi = bakiye;
   }
 
-  else if(turLower.includes("vadeli")){
+  else if(tur.toLowerCase().includes("vadeli")){
     vadeli += bakiye;
     tlKarsiligi = bakiye;
   }
