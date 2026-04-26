@@ -1627,7 +1627,7 @@ if(aktifTip === "tahsilat"){
 if(aktifTip === "odeme"){
   banka = gonderen;
 }
-if(!banka){
+if(aktifTip !== "transfer" && !banka){
   alert("Banka seç");
   return;
 }
@@ -1643,6 +1643,45 @@ if(aktifTip === "tahsilat"){
 
 if(aktifTip === "odeme"){
   cikis = tutar;
+}
+
+if(aktifTip === "transfer"){
+
+  if(!gonderen || !alan){
+    alert("Banka seç");
+    return;
+  }
+
+  if(gonderen === alan){
+    alert("Aynı banka olmaz");
+    return;
+  }
+
+  // 1️⃣ çıkış
+  await supabaseClient.from("banka_hareketleri").insert({
+    tarih,
+    banka: gonderen,
+    tur,
+    giris: 0,
+    cikis: tutar,
+    aciklama: "Transfer -> " + alan + " | " + aciklama
+  });
+
+  // 2️⃣ giriş
+  await supabaseClient.from("banka_hareketleri").insert({
+    tarih,
+    banka: alan,
+    tur,
+    giris: tutar,
+    cikis: 0,
+    aciklama: gonderen + " -> Transfer | " + aciklama
+  });
+
+  alert("Transfer başarılı");
+
+  closeIslem();
+  await loadNakit();
+  return;
 }
 
 // 🔥 TEK KAYIT
@@ -1784,8 +1823,6 @@ function closeBankaModal(){
 
     <input type="number" id="islemTutar" placeholder="Tutar"><br><br>
 
-    <input type="number" id="islemTutar" placeholder="Tutar"><br><br>
-
 <!-- 🔥 BURAYA EKLE -->
 <select id="islemTur">
   <option value="TL">TL</option>
@@ -1798,8 +1835,6 @@ function closeBankaModal(){
 </select>
 <br><br>
 <!-- 🔥 BURAYA EKLE -->
-
-<input type="text" id="islemAciklama" placeholder="Açıklama"><br><br>
 
     <input type="text" id="islemAciklama" placeholder="Açıklama"><br><br>
 
