@@ -1712,15 +1712,16 @@ const cikis = parseFloat(r.cikis) || 0;
 
     bakiye = bakiye + giris - cikis;
 
-    body.innerHTML += `
-      <tr>
-        <td>${r.tarih}</td>
-        <td>${devir.toLocaleString("tr-TR")} ₺</td>
-        <td>${giris.toLocaleString("tr-TR")} ₺</td>
-   <td>${cikis.toLocaleString("tr-TR")} ₺</td>
-   <td>${bakiye.toLocaleString("tr-TR")} ₺</td>
-      </tr>
-    `;
+body.innerHTML += `
+  <tr>
+    <td>${r.tarih}</td>
+    <td>${r.aciklama || "-"}</td>
+    <td>${devir.toLocaleString("tr-TR")} ₺</td>
+    <td>${giris.toLocaleString("tr-TR")} ₺</td>
+    <td>${cikis.toLocaleString("tr-TR")} ₺</td>
+    <td>${bakiye.toLocaleString("tr-TR")} ₺</td>
+  </tr>
+`;
   });
 
 }
@@ -1790,11 +1791,12 @@ function closeBankaModal(){
     <table>
       <thead>
         <tr>
-          <th>Tarih</th>
-          <th>Devir</th>
-          <th>Giriş</th>
-          <th>Çıkış</th>
-          <th>Gün Sonu</th>
+         <th>Tarih</th>
+<th>Açıklama</th>
+<th>Devir</th>
+<th>Giriş</th>
+<th>Çıkış</th>
+<th>Gün Sonu</th>
         </tr>
       </thead>
       <tbody id="bankaModalBody"></tbody>
