@@ -1714,7 +1714,7 @@ const { error } = await supabaseClient
   .insert({
     tarih: tarih,
     banka: banka,
-    tur: gonderenTur,
+    tur: aktifTip === "tahsilat" ? alanTur : gonderenTur,
     giris: giris,
     cikis: cikis,
     aciklama: aciklama
