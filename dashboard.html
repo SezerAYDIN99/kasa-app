@@ -1657,8 +1657,10 @@ if(aktifTip === "transfer"){
     return;
   }
 
-  // 1️⃣ çıkış
-  await supabaseClient.from("banka_hareketleri").insert({
+// 1️⃣ çıkış
+const { data: data1, error: error1 } = await supabaseClient
+  .from("banka_hareketleri")
+  .insert({
     tarih,
     banka: gonderen,
     tur,
@@ -1667,8 +1669,19 @@ if(aktifTip === "transfer"){
     aciklama: "Transfer -> " + alan + " | " + aciklama
   });
 
-  // 2️⃣ giriş
-  await supabaseClient.from("banka_hareketleri").insert({
+console.log("ÇIKIŞ DATA:", data1);
+console.log("ÇIKIŞ ERROR:", error1);
+
+if (error1) {
+  alert("ÇIKIŞ HATA: " + error1.message);
+  return;
+}
+
+
+// 2️⃣ giriş
+const { data: data2, error: error2 } = await supabaseClient
+  .from("banka_hareketleri")
+  .insert({
     tarih,
     banka: alan,
     tur,
@@ -1677,6 +1690,15 @@ if(aktifTip === "transfer"){
     aciklama: gonderen + " -> Transfer | " + aciklama
   });
 
+console.log("GİRİŞ DATA:", data2);
+console.log("GİRİŞ ERROR:", error2);
+
+if (error2) {
+  alert("GİRİŞ HATA: " + error2.message);
+  return;
+}
+
+alert("Transfer tamamlandı");
   alert("Transfer başarılı");
 
   closeIslem();
@@ -1865,3 +1887,4 @@ function closeBankaModal(){
 
 </body>
 </html>
+		
