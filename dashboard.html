@@ -1360,6 +1360,7 @@ const seciliTarih = bitis2 && bitis2 !== "" ? bitis2 : null;
 
 // 🔥 dövizleri buna göre yükle
 await loadDoviz(seciliTarih);
+await new Promise(r => setTimeout(r, 200));
 
 console.log("Seçilen tarih:", baslangic, bitis2);
 
@@ -1383,7 +1384,7 @@ const { data, error } = await query;
 
 const getKur = (id) => {
   const val = document.getElementById(id)?.innerText;
-  return Number(val) || 0;
+  return parseFloat(val.replace(",", ".")) || 0;
 };
 
 const kullanilacakUsd = getKur("usdKur");
@@ -1416,7 +1417,9 @@ data.forEach(r => {
 
 });
 
-Object.keys(hesaplar).forEach(key => {
+Object.keys(hesaplar)
+  .sort((a, b) => a.localeCompare(b, 'tr'))
+  .forEach(key => {
 
   const [banka, tur] = key.split("_");
   const bakiye = hesaplar[key];
