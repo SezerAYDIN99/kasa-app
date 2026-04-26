@@ -1364,7 +1364,7 @@ await loadDoviz(seciliTarih);
 console.log("Seçilen tarih:", baslangic, bitis2);
 
  let query = supabaseClient
-  .from("banka_hareketleri")
+  .from("kasa_verileri")
   .select("*")
   .order("tarih", { ascending: true });
 
@@ -1402,14 +1402,14 @@ let hesaplar = {};
 // 1. TÜM HAREKETLERİ TOPLA
 data.forEach(r => {
 
-  const key = r.banka + "_" + r.tur;
+  const key = r.kasa + "_TL";
 
   if(!hesaplar[key]){
     hesaplar[key] = 0;
   }
 
-  hesaplar[key] += Number(r.giris || 0);
-  hesaplar[key] -= Number(r.cikis || 0);
+  hesaplar[key] += Number(r.tahsilat || 0);
+  hesaplar[key] -= Number(r.tediye || 0);
 
 });
 
