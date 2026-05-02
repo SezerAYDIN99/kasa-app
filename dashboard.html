@@ -1209,7 +1209,8 @@ if(!file) return;
 const reader = new FileReader();
 
 reader.onload = async function(evt){
-document.getElementById("loading").style.display = "block";
+const loading = document.getElementById("loading");
+if(loading) loading.style.display = "block";
 const data = new Uint8Array(evt.target.result);
 const workbook = XLSX.read(data, { type: 'array' });
 
